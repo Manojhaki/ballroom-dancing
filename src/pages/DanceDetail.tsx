@@ -1,0 +1,145 @@
+import { Link, Navigate, useParams } from 'react-router-dom';
+import { dances, getDanceById } from '../data/dances';
+
+const traitList: { key: 'energy' | 'holdCloseness' | 'pace' | 'playfulness' | 'elegance'; label: string }[] = [
+  { key: 'energy', label: 'Energy' },
+  { key: 'holdCloseness', label: 'Hold closeness' },
+  { key: 'pace', label: 'Pace' },
+  { key: 'playfulness', label: 'Playfulness' },
+  { key: 'elegance', label: 'Elegance' },
+];
+
+export default function DanceDetail() {
+  const { danceId } = useParams();
+  const dance = danceId ? getDanceById(danceId) : undefined;
+
+  if (!dance) {
+    return <Navigate to="/encyclopedia" replace />;
+  }
+
+  const related = dances.filter((d) => d.category === dance.category && d.id !== dance.id).slice(0, 3);
+
+  return (
+    <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
+      <Link to="/encyclopedia" className="text-sm font-semibold text-maroon-700 hover:text-maroon-900">
+        ← All dance styles
+      </Link>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <span className="rounded-full bg-maroon-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-maroon-800">
+          {dance.category}
+        </span>
+        <span className="rounded-full bg-gold-100 px-3 py-1 text-xs font-medium text-gold-800">
+          {dance.difficulty}
+        </span>
+      </div>
+
+      <h1 className="mt-4 font-display text-4xl font-semibold text-maroon-900 sm:text-5xl">
+        {dance.name}
+      </h1>
+      <p className="mt-4 max-w-2xl text-lg text-maroon-700/90">{dance.description}</p>
+
+      <div className="mt-8 aspect-video w-full overflow-hidden rounded-2xl border border-maroon-200 bg-black shadow-sm">
+        <iframe
+          className="h-full w-full"
+          src={`https://www.youtube.com/embed/${dance.videoId}`}
+          title={dance.videoTitle}
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          allowFullScreen
+        />
+      </div>
+      <p className="mt-2 text-sm text-maroon-700/70">
+        {dance.videoTitle} —{' '}
+        <a
+          href={`https://www.youtube.com/watch?v=${dance.videoId}`}
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium text-maroon-800 underline hover:text-maroon-900"
+        >
+          open on YouTube
+        </a>
+      </p>
+
+      <div className="mt-10 grid gap-8 sm:grid-cols-2">
+        <div className="rounded-2xl border border-maroon-200 bg-white p-6">
+          <h2 className="font-display text-lg font-semibold text-maroon-900">At a glance</h2>
+          <dl className="mt-3 space-y-2 text-sm">
+            <div className="flex justify-between gap-4">
+              <dt className="text-maroon-700/70">Origin</dt>
+              <dd className="text-right font-medium text-maroon-900">{dance.origin}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-maroon-700/70">Era</dt>
+              <dd className="text-right font-medium text-maroon-900">{dance.era}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-maroon-700/70">Time signature</dt>
+              <dd className="text-right font-medium text-maroon-900">{dance.timeSignature}</dd>
+            </div>
+            <div className="flex justify-between gap-4">
+              <dt className="text-maroon-700/70">Tempo</dt>
+              <dd className="text-right font-medium text-maroon-900">{dance.tempo}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div className="rounded-2xl border border-maroon-200 bg-white p-6">
+          <h2 className="font-display text-lg font-semibold text-maroon-900">Character</h2>
+          <div className="mt-3 space-y-3">
+            {traitList.map((t) => (
+              <div key={t.key}>
+                <div className="mb-1 flex justify-between text-xs text-maroon-700/70">
+                  <span>{t.label}</span>
+                </div>
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-maroon-100">
+                  <div
+                    className="h-full rounded-full bg-gold-500"
+                    style={{ width: `${(dance.traits[t.key] / 5) * 100}%` }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-maroon-200 bg-white p-6">
+        <h2 className="font-display text-lg font-semibold text-maroon-900">What makes it distinct</h2>
+        <ul className="mt-3 grid gap-2 sm:grid-cols-2">
+          {dance.characteristics.map((c) => (
+            <li key={c} className="flex items-start gap-2 text-sm text-maroon-800">
+              <span className="mt-1.5 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-maroon-500" />
+              {c}
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-gold-200 bg-gold-50 p-6">
+        <h2 className="font-display text-lg font-semibold text-gold-900">Fun fact</h2>
+        <p className="mt-2 text-sm text-gold-900/90">{dance.funFact}</p>
+      </div>
+
+      {related.length > 0 && (
+        <div className="mt-12">
+          <h2 className="font-display text-xl font-semibold text-maroon-900">
+            More {dance.category} dances
+          </h2>
+          <div className="mt-4 grid gap-4 sm:grid-cols-3">
+            {related.map((r) => (
+              <Link
+                key={r.id}
+                to={`/encyclopedia/${r.id}`}
+                className="rounded-xl border border-maroon-200 bg-white p-4 transition-all hover:-translate-y-1 hover:shadow-md"
+              >
+                <span className="font-display font-semibold text-maroon-900">{r.name}</span>
+                <p className="mt-1 text-xs text-maroon-700/70 line-clamp-2">{r.description}</p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
