@@ -1,31 +1,33 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Playfair Display", ui-serif, Georgia, serif;
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
-  --color-maroon-50: #fdf3f3;
-  --color-maroon-100: #fbe1e2;
-  --color-maroon-200: #f7c8ca;
-  --color-maroon-300: #f0a1a5;
-  --color-maroon-400: #e5717a;
-  --color-maroon-500: #d54655;
-  --color-maroon-600: #b62a3c;
-  --color-maroon-700: #8f1f30;
-  --color-maroon-800: #6e1c2a;
-  --color-maroon-900: #5c1a26;
-  --color-maroon-950: #330a11;
+  /* "maroon" scale: deep aubergine/plum instead of literal ballroom red */
+  --color-maroon-50: #fbf6ee;
+  --color-maroon-100: #f3e3d9;
+  --color-maroon-200: #e9c9cd;
+  --color-maroon-300: #d7a3ae;
+  --color-maroon-400: #bd7686;
+  --color-maroon-500: #9c4f62;
+  --color-maroon-600: #7d3a4c;
+  --color-maroon-700: #632e3f;
+  --color-maroon-800: #4f2735;
+  --color-maroon-900: #3d2436;
+  --color-maroon-950: #241318;
 
-  --color-gold-50: #fdfaef;
-  --color-gold-100: #faf1d1;
-  --color-gold-200: #f4e19f;
-  --color-gold-300: #eccb62;
-  --color-gold-400: #e4b338;
-  --color-gold-500: #d59a22;
-  --color-gold-600: #b7791b;
-  --color-gold-700: #935819;
-  --color-gold-800: #78461b;
-  --color-gold-900: #663b1c;
+  /* "gold" scale: warm terracotta instead of literal trophy gold */
+  --color-gold-50: #fdf6f0;
+  --color-gold-100: #faeadd;
+  --color-gold-200: #f3d0b3;
+  --color-gold-300: #e9b083;
+  --color-gold-400: #dc8c5c;
+  --color-gold-500: #c9713f;
+  --color-gold-600: #ad5a30;
+  --color-gold-700: #8c4627;
+  --color-gold-800: #713a23;
+  --color-gold-900: #5e311f;
 }
 
 html {

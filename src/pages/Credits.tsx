@@ -89,7 +89,7 @@ export default function Credits() {
       <section className="mt-10">
         <h2 className="font-display text-xl font-semibold text-maroon-900">Type</h2>
         <p className="mt-2 text-sm text-maroon-700/80">
-          Playfair Display and Inter, via{' '}
+          Fraunces and Inter, via{' '}
           <a
             href="https://fonts.google.com/"
             target="_blank"
