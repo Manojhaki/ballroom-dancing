@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { internationalDances, type InternationalCategory } from '../data/dances';
+import { RevealGrid, RevealItem } from '../components/RevealGrid';
 
 const sections: { category: InternationalCategory; blurb: string }[] = [
   {
@@ -34,20 +35,20 @@ export default function International() {
               International {section.category}
             </h2>
             <p className="mt-2 max-w-2xl text-sm text-maroon-700/80">{section.blurb}</p>
-            <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
+            <RevealGrid className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
               {list.map((d) => (
-                <Link
-                  key={d.id}
-                  to={`/dance/${d.id}`}
-                  state={{ from: 'international' }}
-                  className="flex flex-col rounded-2xl border border-maroon-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
-                >
-                  <span className="font-display text-lg font-semibold text-maroon-900">{d.name}</span>
-                  <span className="mt-1 text-xs font-medium text-gold-600">{d.difficulty}</span>
-                  <p className="mt-2 text-sm text-maroon-700/80 line-clamp-3">{d.description}</p>
-                </Link>
+                <RevealItem key={d.id}>
+                  <Link
+                    to={`/dance/${d.id}`}
+                    className="flex h-full flex-col rounded-2xl border border-maroon-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+                  >
+                    <span className="font-display text-lg font-semibold text-maroon-900">{d.name}</span>
+                    <span className="mt-1 text-xs font-medium text-gold-600">{d.difficulty}</span>
+                    <p className="mt-2 text-sm text-maroon-700/80 line-clamp-3">{d.description}</p>
+                  </Link>
+                </RevealItem>
               ))}
-            </div>
+            </RevealGrid>
           </section>
         );
       })}

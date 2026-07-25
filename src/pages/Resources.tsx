@@ -10,7 +10,7 @@ function ResourceList({ items }: { items: ResourceLink[] }) {
           href={r.url}
           target="_blank"
           rel="noreferrer"
-          className="block rounded-2xl border border-maroon-200 bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
+          className="block rounded-2xl border border-maroon-200 bg-white p-5 transition-all hover:-translate-y-1 hover:shadow-md"
         >
           <div className="flex items-start justify-between gap-3">
             <span className="font-display font-semibold text-maroon-900">{r.title}</span>

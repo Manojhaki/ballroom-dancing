@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 import { NavLink, Outlet } from 'react-router-dom';
 
 const navItems = [
@@ -11,35 +13,99 @@ const navItems = [
   { to: '/about', label: 'About' },
 ];
 
+/* Mobile menu panel: spring-open/close, no duration guesswork */
+const MENU_SPRING = { type: 'spring' as const, stiffness: 400, damping: 34 };
+
+function NavLinks({ onNavigate, className, linkClassName }: { onNavigate?: () => void; className?: string; linkClassName: (isActive: boolean) => string }) {
+  return (
+    <>
+      {navItems.map((item) => (
+        <NavLink
+          key={item.to}
+          to={item.to}
+          end={item.end}
+          onClick={onNavigate}
+          className={({ isActive }) => `${className ?? ''} ${linkClassName(isActive)}`}
+        >
+          {item.label}
+        </NavLink>
+      ))}
+    </>
+  );
+}
+
 export default function Layout() {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="flex min-h-screen flex-col bg-maroon-50 text-maroon-950">
       <header className="sticky top-0 z-40 border-b border-maroon-200/60 bg-maroon-50/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
-          <NavLink to="/" className="flex items-center gap-2">
+          <NavLink to="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
             <span className="font-display text-xl font-semibold tracking-tight text-maroon-800">
               Ballroom Basics
             </span>
           </NavLink>
-          <nav className="flex flex-wrap items-center gap-1 sm:gap-2">
-            {navItems.map((item) => (
-              <NavLink
-                key={item.to}
-                to={item.to}
-                end={item.end}
-                className={({ isActive }) =>
-                  `rounded-full px-3 py-1.5 text-sm font-medium transition-colors sm:px-4 ${
-                    isActive
-                      ? 'bg-maroon-700 text-gold-50'
-                      : 'text-maroon-700 hover:bg-maroon-100'
-                  }`
-                }
-              >
-                {item.label}
-              </NavLink>
-            ))}
+
+          <nav className="hidden flex-wrap items-center gap-1 lg:flex">
+            <NavLinks
+              linkClassName={(isActive) =>
+                `rounded-full px-3 py-1.5 text-sm font-medium transition-colors ${
+                  isActive ? 'bg-maroon-700 text-gold-50' : 'text-maroon-700 hover:bg-maroon-100'
+                }`
+              }
+            />
           </nav>
+
+          <button
+            type="button"
+            onClick={() => setMenuOpen((o) => !o)}
+            aria-expanded={menuOpen}
+            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+            className="flex h-9 w-9 flex-col items-center justify-center gap-1.5 rounded-full text-maroon-800 hover:bg-maroon-100 lg:hidden"
+          >
+            <motion.span
+              className="block h-0.5 w-5 rounded-full bg-current"
+              animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 4 : 0 }}
+              transition={MENU_SPRING}
+            />
+            <motion.span
+              className="block h-0.5 w-5 rounded-full bg-current"
+              animate={{ opacity: menuOpen ? 0 : 1 }}
+              transition={{ duration: 0.15 }}
+            />
+            <motion.span
+              className="block h-0.5 w-5 rounded-full bg-current"
+              animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -4 : 0 }}
+              transition={MENU_SPRING}
+            />
+          </button>
         </div>
+
+        <AnimatePresence>
+          {menuOpen && (
+            <motion.nav
+              key="mobile-menu"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={MENU_SPRING}
+              className="overflow-hidden border-t border-maroon-200/60 lg:hidden"
+            >
+              <div className="flex flex-col gap-1 px-4 py-3 sm:px-6">
+                <NavLinks
+                  onNavigate={() => setMenuOpen(false)}
+                  className="w-full"
+                  linkClassName={(isActive) =>
+                    `rounded-lg px-3 py-2.5 text-sm font-medium transition-colors ${
+                      isActive ? 'bg-maroon-700 text-gold-50' : 'text-maroon-700 hover:bg-maroon-100'
+                    }`
+                  }
+                />
+              </div>
+            </motion.nav>
+          )}
+        </AnimatePresence>
       </header>
 
       <main className="flex-1">
