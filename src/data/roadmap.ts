@@ -83,6 +83,42 @@ export const etiquette: FaqItem[] = [
   },
 ];
 
+export const styleSystems: FaqItem[] = [
+  {
+    question: 'What is American Style?',
+    answer:
+      "The style system most common at US studios and USA Dance events, split into American Smooth (Waltz, Tango, Foxtrot, Viennese Waltz — allows open and separated figures) and American Rhythm (Cha Cha, Rumba, Swing, Bolero, Mambo). It tends to be more flexible and improvisation-friendly than International Style.",
+  },
+  {
+    question: 'What is International Style?',
+    answer:
+      "The style system used worldwide in DanceSport competition, split into International Standard (Waltz, Tango, Foxtrot, Quickstep, Viennese Waltz — always in closed hold) and International Latin (Cha Cha, Samba, Rumba, Paso Doble, Jive). It's more rigid in structure, which many beginners find easier to drill.",
+  },
+  {
+    question: 'Do I have to pick one?',
+    answer:
+      "No. Most studios teach American Style first since it is more common in the US social scene, but plenty of dancers learn figures from both — the underlying rhythm, frame, and musicality skills transfer either way.",
+  },
+];
+
+export const studioTypes: FaqItem[] = [
+  {
+    question: 'Chain studios (e.g. Arthur Murray, Fred Astaire)',
+    answer:
+      'Franchise studios with a standardized curriculum, in-house syllabus, and structured pricing packages — often bundling group classes, private lessons, and studio parties. A predictable, guided on-ramp, though private lesson packages can get expensive quickly.',
+  },
+  {
+    question: 'Independent studios',
+    answer:
+      'Owner-operated studios with more variation in teaching style, pricing, and curriculum. Often cheaper per lesson and more flexible, but quality and structure vary more — worth trying a class before committing to a package.',
+  },
+  {
+    question: 'Community / university programs',
+    answer:
+      'Parks-and-rec departments, dance clubs, and collegiate ballroom teams often run low-cost group lessons. Usually the cheapest entry point, with less individual attention than private lessons.',
+  },
+];
+
 export interface GlossaryTerm {
   term: string;
   definition: string;

@@ -1,4 +1,4 @@
-import { Link, Navigate, useParams } from 'react-router-dom';
+import { Link, Navigate, useParams, useLocation } from 'react-router-dom';
 import { dances, getDanceById } from '../data/dances';
 
 const traitList: { key: 'energy' | 'holdCloseness' | 'pace' | 'playfulness' | 'elegance'; label: string }[] = [
@@ -11,24 +11,50 @@ const traitList: { key: 'energy' | 'holdCloseness' | 'pace' | 'playfulness' | 'e
 
 export default function DanceDetail() {
   const { danceId } = useParams();
+  const location = useLocation();
   const dance = danceId ? getDanceById(danceId) : undefined;
 
   if (!dance) {
-    return <Navigate to="/encyclopedia" replace />;
+    return <Navigate to="/start" replace />;
   }
 
-  const related = dances.filter((d) => d.category === dance.category && d.id !== dance.id).slice(0, 3);
+  // Send the back link to wherever makes sense: if we arrived with state
+  // telling us the originating list, use it; otherwise fall back sensibly.
+  const cameFromInternational = location.state?.from === 'international';
+  const backTo = cameFromInternational ? '/international' : dance.americanCategory ? '/american' : '/international';
+  const backLabel = backTo === '/american' ? 'American Style' : 'International Style';
+
+  const related = dances
+    .filter(
+      (d) =>
+        d.id !== dance.id &&
+        ((dance.americanCategory && d.americanCategory === dance.americanCategory) ||
+          (dance.internationalCategory && d.internationalCategory === dance.internationalCategory)),
+    )
+    .slice(0, 3);
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
-      <Link to="/encyclopedia" className="text-sm font-semibold text-maroon-700 hover:text-maroon-900">
-        ← All dance styles
+      <Link to={backTo} className="text-sm font-semibold text-maroon-700 hover:text-maroon-900">
+        ← {backLabel}
       </Link>
 
       <div className="mt-4 flex flex-wrap items-center gap-3">
-        <span className="rounded-full bg-maroon-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-maroon-800">
-          {dance.category}
-        </span>
+        {dance.americanCategory && (
+          <span className="rounded-full bg-maroon-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-maroon-800">
+            American {dance.americanCategory}
+          </span>
+        )}
+        {dance.internationalCategory && (
+          <span className="rounded-full bg-maroon-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-maroon-800">
+            International {dance.internationalCategory}
+          </span>
+        )}
+        {dance.social && (
+          <span className="rounded-full bg-maroon-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-maroon-800">
+            Social
+          </span>
+        )}
         <span className="rounded-full bg-gold-100 px-3 py-1 text-xs font-medium text-gold-800">
           {dance.difficulty}
         </span>
@@ -116,6 +142,37 @@ export default function DanceDetail() {
         </ul>
       </div>
 
+      {dance.bronzeFigures.length > 0 && (
+        <div className="mt-8 rounded-2xl border border-maroon-200 bg-white p-6">
+          <h2 className="font-display text-lg font-semibold text-maroon-900">Bronze-level figures</h2>
+          <p className="mt-1 text-xs text-maroon-700/70">
+            Names only — for full technique, see the official syllabus below.
+          </p>
+          <ul className="mt-3 flex flex-wrap gap-2">
+            {dance.bronzeFigures.map((f) => (
+              <li key={f} className="rounded-full bg-maroon-50 px-3 py-1 text-sm text-maroon-800">
+                {f}
+              </li>
+            ))}
+          </ul>
+          {dance.officialSyllabus.length > 0 && (
+            <div className="mt-4 flex flex-col gap-1">
+              {dance.officialSyllabus.map((s) => (
+                <a
+                  key={s.url}
+                  href={s.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm font-medium text-maroon-700 underline hover:text-maroon-900"
+                >
+                  {s.label} ↗
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="mt-8 rounded-2xl border border-gold-200 bg-gold-50 p-6">
         <h2 className="font-display text-lg font-semibold text-gold-900">Fun fact</h2>
         <p className="mt-2 text-sm text-gold-900/90">{dance.funFact}</p>
@@ -123,14 +180,12 @@ export default function DanceDetail() {
 
       {related.length > 0 && (
         <div className="mt-12">
-          <h2 className="font-display text-xl font-semibold text-maroon-900">
-            More {dance.category} dances
-          </h2>
+          <h2 className="font-display text-xl font-semibold text-maroon-900">More like this</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-3">
             {related.map((r) => (
               <Link
                 key={r.id}
-                to={`/encyclopedia/${r.id}`}
+                to={`/dance/${r.id}`}
                 className="rounded-xl border border-maroon-200 bg-white p-4 transition-all hover:-translate-y-1 hover:shadow-md"
               >
                 <span className="font-display font-semibold text-maroon-900">{r.name}</span>

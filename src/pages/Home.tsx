@@ -1,27 +1,27 @@
 import { Link } from 'react-router-dom';
 import { dances } from '../data/dances';
 
-const featureLinks = [
+const entryPaths = [
   {
-    to: '/encyclopedia',
-    title: 'Explore Dance Styles',
+    to: '/start',
+    title: "I'm a total beginner",
     description:
-      'Browse Waltz, Tango, Cha Cha, Salsa and more — origins, music, difficulty, and what makes each one distinct.',
-    cta: 'See the styles',
+      'What ballroom even is, American vs. International style, what to wear, floor etiquette, and the words instructors assume you already know.',
+    cta: 'Start here',
   },
   {
-    to: '/roadmap',
-    title: "Beginner's Roadmap",
+    to: '/compete',
+    title: "I want to compete",
     description:
-      'A step-by-step path for total beginners: what to wear, etiquette, key terms, and how to find your first class.',
-    cta: 'Start the roadmap',
+      'First competition, how levels work, collegiate circuits, and what to expect walking into your first Bronze heat.',
+    cta: 'See the competitor path',
   },
   {
-    to: '/finder',
-    title: 'Find Your Dance',
+    to: '/resources',
+    title: 'I want the official stuff',
     description:
-      'Answer a few quick questions about your taste and energy, and get matched to the dance styles you\'ll likely enjoy most.',
-    cta: 'Take the quiz',
+      'Direct links to USA Dance, NDCA, and Dance Vision syllabi, plus free manuals — the primary sources, not a paraphrase.',
+    cta: 'Browse resources',
   },
 ];
 
@@ -33,29 +33,38 @@ export default function Home() {
       <section className="relative overflow-hidden border-b border-maroon-200/60">
         <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
           <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold-600">
-            A friendly starting point
+            A friend once asked me
           </p>
           <h1 className="max-w-3xl font-display text-4xl font-semibold leading-tight text-maroon-900 sm:text-5xl md:text-6xl">
-            Find your way into the world of ballroom dancing.
+            "I wonder what it's like to be inside music."
           </h1>
-          <p className="mt-6 max-w-xl text-lg text-maroon-700/90">
-            Waltz, Tango, Salsa, Swing — there are dozens of styles and it's easy to feel lost
-            before you've taken a single step. Ballroom Basics breaks it down for total
-            beginners: what each dance feels like, how to get started, and which one might suit
-            you.
-          </p>
+          <div className="mt-6 max-w-xl space-y-4 text-lg text-maroon-700/90">
+            <p>
+              I didn't have a good answer at the time. Ballroom dancing turned out to be the
+              closest I've come to one.
+            </p>
+            <p className="italic text-maroon-600">
+              [Placeholder — my actual origin story goes here: how I walked in cold, which
+              studios and cities, American Smooth showcases, competing Open Latin, all of it.
+              Filling this in properly soon.]
+            </p>
+            <p>
+              I'm on a break from dancing right now, and that's fine — dancers step away and
+              come back. This site isn't going anywhere in the meantime.
+            </p>
+          </div>
           <div className="mt-8 flex flex-wrap gap-3">
             <Link
-              to="/finder"
+              to="/start"
               className="rounded-full bg-maroon-700 px-6 py-3 text-sm font-semibold text-gold-50 transition-colors hover:bg-maroon-800"
             >
-              Find your dance
+              Start here
             </Link>
             <Link
-              to="/encyclopedia"
+              to="/finder"
               className="rounded-full border border-maroon-300 bg-white px-6 py-3 text-sm font-semibold text-maroon-800 transition-colors hover:bg-maroon-100"
             >
-              Browse dance styles
+              Find your dance (2 min quiz)
             </Link>
           </div>
         </div>
@@ -63,7 +72,7 @@ export default function Home() {
 
       <section className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <div className="grid gap-6 sm:grid-cols-3">
-          {featureLinks.map((f) => (
+          {entryPaths.map((f) => (
             <Link
               key={f.to}
               to={f.to}
@@ -85,19 +94,19 @@ export default function Home() {
             <h2 className="font-display text-2xl font-semibold text-maroon-900 sm:text-3xl">
               A few dances to get you curious
             </h2>
-            <Link to="/encyclopedia" className="hidden text-sm font-semibold text-maroon-700 hover:text-maroon-900 sm:inline">
-              View all →
+            <Link to="/start" className="hidden text-sm font-semibold text-maroon-700 hover:text-maroon-900 sm:inline">
+              See the full picture →
             </Link>
           </div>
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {featured.map((d) => (
               <Link
                 key={d.id}
-                to={`/encyclopedia/${d.id}`}
+                to={`/dance/${d.id}`}
                 className="flex flex-col rounded-xl border border-maroon-200 bg-white p-5 transition-all hover:-translate-y-1 hover:shadow-md"
               >
                 <span className="text-xs font-semibold uppercase tracking-wide text-gold-600">
-                  {d.category}
+                  {d.americanCategory ?? d.internationalCategory ?? 'Social'}
                 </span>
                 <span className="mt-1 font-display text-lg font-semibold text-maroon-900">
                   {d.name}

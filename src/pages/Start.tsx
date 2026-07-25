@@ -1,48 +1,17 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { etiquette, glossary, roadmapSteps, wearGuide, type FaqItem } from '../data/roadmap';
+import FaqGroup from '../components/FaqGroup';
+import { etiquette, glossary, roadmapSteps, studioTypes, styleSystems, wearGuide } from '../data/roadmap';
 
-function FaqGroup({ title, items }: { title: string; items: FaqItem[] }) {
-  const [openIndex, setOpenIndex] = useState<number | null>(0);
-
-  return (
-    <div>
-      <h2 className="font-display text-2xl font-semibold text-maroon-900">{title}</h2>
-      <div className="mt-4 divide-y divide-maroon-200 rounded-2xl border border-maroon-200 bg-white">
-        {items.map((item, i) => {
-          const open = openIndex === i;
-          return (
-            <div key={item.question}>
-              <button
-                type="button"
-                onClick={() => setOpenIndex(open ? null : i)}
-                className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
-                aria-expanded={open}
-              >
-                <span className="font-medium text-maroon-900">{item.question}</span>
-                <span className="flex-shrink-0 text-lg text-maroon-500">{open ? '−' : '+'}</span>
-              </button>
-              {open && (
-                <p className="px-5 pb-4 text-sm text-maroon-700/85">{item.answer}</p>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
-export default function Roadmap() {
+export default function Start() {
   return (
     <div className="mx-auto max-w-4xl px-4 py-12 sm:px-6">
       <p className="text-sm font-semibold uppercase tracking-widest text-gold-600">Get started</p>
       <h1 className="mt-2 font-display text-3xl font-semibold text-maroon-900 sm:text-4xl">
-        Beginner's Roadmap
+        Start Here
       </h1>
       <p className="mt-3 max-w-2xl text-maroon-700/85">
-        Everything a total beginner needs before their first class: what to expect, what to
-        wear, floor etiquette, and the vocabulary instructors assume you already know.
+        Everything a total beginner needs before their first class: what ballroom actually is,
+        what to wear, floor etiquette, and the vocabulary instructors assume you already know.
       </p>
 
       <section className="mt-10">
@@ -60,6 +29,24 @@ export default function Roadmap() {
             </li>
           ))}
         </ol>
+      </section>
+
+      <section className="mt-12">
+        <FaqGroup title="American Style vs. International Style" items={styleSystems} />
+        <p className="mt-3 text-sm text-maroon-700/80">
+          Full breakdowns of each:{' '}
+          <Link to="/american" className="font-medium text-maroon-800 underline hover:text-maroon-900">
+            American Style
+          </Link>{' '}
+          ·{' '}
+          <Link to="/international" className="font-medium text-maroon-800 underline hover:text-maroon-900">
+            International Style
+          </Link>
+        </p>
+      </section>
+
+      <section className="mt-12">
+        <FaqGroup title="Chain vs. independent studios" items={studioTypes} />
       </section>
 
       <section className="mt-12">

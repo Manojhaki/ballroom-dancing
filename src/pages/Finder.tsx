@@ -147,7 +147,7 @@ export default function Finder() {
             {results.slice(0, 3).map(({ dance, score }, i) => (
               <Link
                 key={dance.id}
-                to={`/encyclopedia/${dance.id}`}
+                to={`/dance/${dance.id}`}
                 className="flex items-center gap-4 rounded-2xl border border-maroon-200 bg-white p-5 transition-all hover:-translate-y-0.5 hover:shadow-md"
               >
                 <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-gold-100 font-display text-lg font-semibold text-gold-800">

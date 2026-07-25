@@ -2,9 +2,13 @@ import { NavLink, Outlet } from 'react-router-dom';
 
 const navItems = [
   { to: '/', label: 'Home', end: true },
-  { to: '/encyclopedia', label: 'Dance Styles' },
-  { to: '/roadmap', label: "Beginner's Roadmap" },
-  { to: '/finder', label: 'Find Your Dance' },
+  { to: '/start', label: 'Start Here' },
+  { to: '/american', label: 'American Style' },
+  { to: '/international', label: 'International Style' },
+  { to: '/compete', label: 'Compete' },
+  { to: '/resources', label: 'Resources' },
+  { to: '/history', label: 'History' },
+  { to: '/about', label: 'About' },
 ];
 
 export default function Layout() {
@@ -45,8 +49,25 @@ export default function Layout() {
       <footer className="border-t border-maroon-200/60 bg-maroon-50">
         <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-maroon-700/80 sm:px-6">
           <p>
-            Ballroom Basics — a friendly starting point for people curious about ballroom
-            dancing. Not affiliated with any studio or federation.
+            Ballroom Basics — a personal, first-hand starting point for people curious about
+            ballroom dancing. Not affiliated with any studio or federation.
+          </p>
+          <p className="mt-2">
+            Original writing and figure-name lists on this site are shared under{' '}
+            <a
+              href="https://creativecommons.org/licenses/by-nc-sa/4.0/"
+              target="_blank"
+              rel="noreferrer"
+              className="underline hover:text-maroon-900"
+            >
+              CC BY-NC-SA 4.0
+            </a>
+            . Linked syllabi, videos, and archival material remain the property of their
+            respective organizations — see{' '}
+            <NavLink to="/credits" className="underline hover:text-maroon-900">
+              credits
+            </NavLink>{' '}
+            for the full list of sources.
           </p>
         </div>
       </footer>
