@@ -42,8 +42,9 @@ export default function Layout() {
       <header className="sticky top-0 z-40 border-b border-maroon-200/60 bg-maroon-50/90 backdrop-blur">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 sm:px-6">
           <NavLink to="/" className="flex items-center gap-2" onClick={() => setMenuOpen(false)}>
+            <img src="/images/ptbIcon.avif" alt="" className="h-8 w-8 rounded-full object-cover" />
             <span className="font-display text-xl font-semibold tracking-tight text-maroon-800">
-              Ballroom Basics
+              Part Time Ballroom Dancing
             </span>
           </NavLink>
 
@@ -115,8 +116,8 @@ export default function Layout() {
       <footer className="border-t border-maroon-200/60 bg-maroon-50">
         <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-maroon-700/80 sm:px-6">
           <p>
-            Ballroom Basics — a personal, first-hand starting point for people curious about
-            ballroom dancing. Not affiliated with any studio or federation.
+            Part Time Ballroom Dancing — a personal, first-hand starting point for people curious
+            about ballroom dancing. Not affiliated with any studio or federation.
           </p>
           <p className="mt-2">
             Original writing and figure-name lists on this site are shared under{' '}

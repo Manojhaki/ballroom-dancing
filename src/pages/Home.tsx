@@ -44,10 +44,11 @@ export default function Home() {
               I didn't have a good answer at the time. Ballroom dancing turned out to be the
               closest I've come to one.
             </p>
-            <p className="italic text-maroon-600">
-              [Placeholder — my actual origin story goes here: how I walked in cold, which
-              studios and cities, American Smooth showcases, competing Open Latin, all of it.
-              Filling this in properly soon.]
+            <p>
+              I walked into a beginner class at a chain studio with zero experience, expecting
+              to feel out of place. A few studios and a few years later — some American Smooth
+              showcases, a lot of group classes — I was competing Open Latin: Cha Cha, Samba,
+              Rumba, Jive, four minutes at a time.
             </p>
             <p>
               I'm on a break from dancing right now, and that's fine — dancers step away and
