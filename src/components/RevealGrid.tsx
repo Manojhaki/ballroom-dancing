@@ -1,9 +1,15 @@
 import { motion } from 'motion/react';
 import type { ReactNode } from 'react';
 
-/* Staggered scroll-into-view reveal for card grids: each card fades and
- * slides up, staggered by REVEAL.stagger, once when it first enters the
- * viewport. */
+/* ─────────────────────────────────────────────────────────
+ * ANIMATION STORYBOARD — scroll-into-view card reveal
+ *
+ *   0ms   grid scrolls into view (fires once, margin -80px early)
+ *   0ms   first card fades in, slides up 20px → 0
+ *  80ms   second card starts (staggered by REVEAL.stagger)
+ * 160ms   third card starts
+ *  ...    one card every REVEAL.stagger seconds
+ * ───────────────────────────────────────────────────────── */
 const REVEAL = {
   offsetY: 20, // px each card slides up from
   stagger: 0.08, // seconds between each card's entrance

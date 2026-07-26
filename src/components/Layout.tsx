@@ -13,8 +13,29 @@ const navItems = [
   { to: '/about', label: 'About' },
 ];
 
-/* Mobile menu panel: spring-open/close, no duration guesswork */
-const MENU_SPRING = { type: 'spring' as const, stiffness: 400, damping: 34 };
+/* ─────────────────────────────────────────────────────────
+ * ANIMATION STORYBOARD — mobile menu toggle
+ *
+ * Two states, no timed sequence — everything below reacts to
+ * `menuOpen` directly rather than a stage counter.
+ *
+ *  closed → open   hamburger bars rotate into an X (top/bottom bars),
+ *                  middle bar fades out, panel expands height 0 → auto
+ *  open → closed   the exact reverse, same springs
+ * ───────────────────────────────────────────────────────── */
+
+/* Hamburger ⇄ X icon bars */
+const ICON = {
+  spring: { type: 'spring' as const, stiffness: 400, damping: 34 },
+  middleBarFade: { duration: 0.15 }, // the fade doesn't need spring physics
+  barRotateDeg: 45, // top/bottom bars rotate this many degrees to form the X
+  barOffsetY: 4, // px the top/bottom bars travel to meet in the middle
+};
+
+/* Mobile nav panel */
+const PANEL = {
+  spring: { type: 'spring' as const, stiffness: 400, damping: 34 },
+};
 
 function NavLinks({ onNavigate, className, linkClassName }: { onNavigate?: () => void; className?: string; linkClassName: (isActive: boolean) => string }) {
   return (
@@ -67,18 +88,18 @@ export default function Layout() {
           >
             <motion.span
               className="block h-0.5 w-5 rounded-full bg-current"
-              animate={{ rotate: menuOpen ? 45 : 0, y: menuOpen ? 4 : 0 }}
-              transition={MENU_SPRING}
+              animate={{ rotate: menuOpen ? ICON.barRotateDeg : 0, y: menuOpen ? ICON.barOffsetY : 0 }}
+              transition={ICON.spring}
             />
             <motion.span
               className="block h-0.5 w-5 rounded-full bg-current"
               animate={{ opacity: menuOpen ? 0 : 1 }}
-              transition={{ duration: 0.15 }}
+              transition={ICON.middleBarFade}
             />
             <motion.span
               className="block h-0.5 w-5 rounded-full bg-current"
-              animate={{ rotate: menuOpen ? -45 : 0, y: menuOpen ? -4 : 0 }}
-              transition={MENU_SPRING}
+              animate={{ rotate: menuOpen ? -ICON.barRotateDeg : 0, y: menuOpen ? -ICON.barOffsetY : 0 }}
+              transition={ICON.spring}
             />
           </button>
         </div>
@@ -90,7 +111,7 @@ export default function Layout() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: 'auto', opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={MENU_SPRING}
+              transition={PANEL.spring}
               className="overflow-hidden border-t border-maroon-200/60 lg:hidden"
             >
               <div className="flex flex-col gap-1 px-4 py-3 sm:px-6">
