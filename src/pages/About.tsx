@@ -31,6 +31,22 @@ export default function About() {
         </p>
       </div>
 
+      <div className="mt-10 rounded-2xl border border-gold-200 bg-gold-50 p-6">
+        <h2 className="font-display text-lg font-semibold text-gold-900">More dancing, on video</h2>
+        <p className="mt-2 text-sm text-gold-900/90">
+          I post clips on YouTube — you'll find a few of them scattered across the dance pages on
+          this site, tagged "Danced by me." The rest are on the channel.
+        </p>
+        <a
+          href="https://www.youtube.com/@PartTimeBallroomDancing"
+          target="_blank"
+          rel="noreferrer"
+          className="mt-4 inline-block rounded-full bg-maroon-700 px-5 py-2 text-sm font-semibold text-gold-50 transition-colors hover:bg-maroon-800"
+        >
+          Part Time Ballroom Dancing on YouTube →
+        </a>
+      </div>
+
       <div className="mt-12">
         <h2 className="font-display text-2xl font-semibold text-maroon-900">
           A few things I learned along the way

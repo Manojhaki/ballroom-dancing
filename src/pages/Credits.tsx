@@ -23,26 +23,64 @@ export default function Credits() {
       </p>
 
       <section className="mt-10">
-        <h2 className="font-display text-xl font-semibold text-maroon-900">Tutorial videos</h2>
+        <h2 className="font-display text-xl font-semibold text-maroon-900">My videos</h2>
         <p className="mt-2 text-sm text-maroon-700/80">
-          Embedded via standard YouTube iframe. All rights belong to the original creators.
+          Clips from my own{' '}
+          <a
+            href="https://www.youtube.com/@PartTimeBallroomDancing"
+            target="_blank"
+            rel="noreferrer"
+            className="font-medium text-maroon-800 underline hover:text-maroon-900"
+          >
+            YouTube channel
+          </a>
+          , embedded via standard YouTube iframe.
         </p>
         <ul className="mt-4 space-y-2 text-sm">
-          {dances.map((d) => (
-            <li key={d.id} className="flex justify-between gap-4 border-b border-maroon-100 pb-2">
-              <span className="text-maroon-700/80">
-                {d.name} —{' '}
-                <a
-                  href={`https://www.youtube.com/watch?v=${d.videoId}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-medium text-maroon-800 underline hover:text-maroon-900"
-                >
-                  {d.videoTitle}
-                </a>
-              </span>
-            </li>
-          ))}
+          {dances
+            .filter((d) => d.videoIsOwn)
+            .map((d) => (
+              <li key={d.id} className="flex justify-between gap-4 border-b border-maroon-100 pb-2">
+                <span className="text-maroon-700/80">
+                  {d.name} —{' '}
+                  <a
+                    href={`https://www.youtube.com/watch?v=${d.videoId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-maroon-800 underline hover:text-maroon-900"
+                  >
+                    {d.videoTitle}
+                  </a>
+                </span>
+              </li>
+            ))}
+        </ul>
+      </section>
+
+      <section className="mt-10">
+        <h2 className="font-display text-xl font-semibold text-maroon-900">Tutorial videos</h2>
+        <p className="mt-2 text-sm text-maroon-700/80">
+          Beginner tutorials from other creators, embedded via standard YouTube iframe. All rights
+          belong to the original creators.
+        </p>
+        <ul className="mt-4 space-y-2 text-sm">
+          {dances
+            .filter((d) => !d.videoIsOwn)
+            .map((d) => (
+              <li key={d.id} className="flex justify-between gap-4 border-b border-maroon-100 pb-2">
+                <span className="text-maroon-700/80">
+                  {d.name} —{' '}
+                  <a
+                    href={`https://www.youtube.com/watch?v=${d.videoId}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="font-medium text-maroon-800 underline hover:text-maroon-900"
+                  >
+                    {d.videoTitle}
+                  </a>
+                </span>
+              </li>
+            ))}
         </ul>
       </section>
 

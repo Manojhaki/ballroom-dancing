@@ -1,6 +1,12 @@
 import { Link } from 'react-router-dom';
 import FaqGroup from '../components/FaqGroup';
+import { RevealGrid, RevealItem } from '../components/RevealGrid';
+import { dances } from '../data/dances';
 import { etiquette, glossary, roadmapSteps, studioTypes, styleSystems, wearGuide } from '../data/roadmap';
+
+// Social-only dances: not part of either competitive syllabus, so /american
+// and /international never list them — this is their only home on the site.
+const socialOnlyDances = dances.filter((d) => d.social && !d.americanCategory && !d.internationalCategory);
 
 export default function Start() {
   return (
@@ -43,6 +49,28 @@ export default function Start() {
             International Style
           </Link>
         </p>
+      </section>
+
+      <section className="mt-12">
+        <h2 className="font-display text-2xl font-semibold text-maroon-900">Social dances</h2>
+        <p className="mt-2 max-w-2xl text-sm text-maroon-700/80">
+          Outside the American/International competitive syllabi entirely — the dances you'll
+          actually run into at a night out, a social, or a club.
+        </p>
+        <RevealGrid className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {socialOnlyDances.map((d) => (
+            <RevealItem key={d.id}>
+              <Link
+                to={`/dance/${d.id}`}
+                className="flex h-full flex-col rounded-2xl border border-maroon-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-1 hover:shadow-md"
+              >
+                <span className="font-display text-lg font-semibold text-maroon-900">{d.name}</span>
+                <span className="mt-1 text-xs font-medium text-gold-600">{d.difficulty}</span>
+                <p className="mt-2 text-sm text-maroon-700/80 line-clamp-3">{d.description}</p>
+              </Link>
+            </RevealItem>
+          ))}
+        </RevealGrid>
       </section>
 
       <section className="mt-12">

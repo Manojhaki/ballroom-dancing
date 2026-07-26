@@ -70,15 +70,26 @@ export default function DanceDetail() {
       </h1>
       <p className="mt-4 max-w-2xl text-lg text-maroon-700/90">{dance.description}</p>
 
-      <div className="mt-8 aspect-video w-full overflow-hidden rounded-2xl border border-maroon-200 bg-black shadow-sm">
-        <iframe
-          className="h-full w-full"
-          src={`https://www.youtube.com/embed/${dance.videoId}`}
-          title={dance.videoTitle}
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          allowFullScreen
-        />
+      <div className="mt-8">
+        {dance.videoIsOwn && (
+          <span className="mb-2 inline-block rounded-full bg-gold-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gold-800">
+            Danced by me
+          </span>
+        )}
+        <div
+          className={`overflow-hidden rounded-2xl border border-maroon-200 bg-black shadow-sm ${
+            dance.videoOrientation === 'vertical' ? 'mx-auto aspect-[9/16] max-w-xs' : 'aspect-video w-full'
+          }`}
+        >
+          <iframe
+            className="h-full w-full"
+            src={`https://www.youtube.com/embed/${dance.videoId}`}
+            title={dance.videoTitle}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerPolicy="strict-origin-when-cross-origin"
+            allowFullScreen
+          />
+        </div>
       </div>
       <p className="mt-2 text-sm text-maroon-700/70">
         {dance.videoTitle} —{' '}
@@ -88,8 +99,21 @@ export default function DanceDetail() {
           rel="noreferrer"
           className="font-medium text-maroon-800 underline hover:text-maroon-900"
         >
-          open on YouTube
+          {dance.videoIsOwn ? 'watch on YouTube' : 'open on YouTube'}
         </a>
+        {dance.videoIsOwn && (
+          <>
+            {' · '}
+            <a
+              href="https://www.youtube.com/@PartTimeBallroomDancing"
+              target="_blank"
+              rel="noreferrer"
+              className="font-medium text-maroon-800 underline hover:text-maroon-900"
+            >
+              more on my channel
+            </a>
+          </>
+        )}
       </p>
 
       <div className="mt-10 grid gap-8 sm:grid-cols-2">
