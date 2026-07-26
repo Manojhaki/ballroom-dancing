@@ -18,7 +18,7 @@ export default function Credits() {
         >
           CC BY-NC-SA 4.0
         </a>
-        . Everything below remains the property of its original source — embedded or linked, never
+        . Everything below remains the property of its original source, embedded or linked, never
         rehosted.
       </p>
 
@@ -37,12 +37,25 @@ export default function Credits() {
           , embedded via standard YouTube iframe.
         </p>
         <ul className="mt-4 space-y-2 text-sm">
+          <li className="flex justify-between gap-4 border-b border-maroon-100 pb-2">
+            <span className="text-maroon-700/80">
+              Home intro:{' '}
+              <a
+                href="https://youtu.be/EdTWw0In1HM"
+                target="_blank"
+                rel="noreferrer"
+                className="font-medium text-maroon-800 underline hover:text-maroon-900"
+              >
+                Welcome to Part Time Ballroom Dancing
+              </a>
+            </span>
+          </li>
           {dances
             .filter((d) => d.videoIsOwn)
             .map((d) => (
               <li key={d.id} className="flex justify-between gap-4 border-b border-maroon-100 pb-2">
                 <span className="text-maroon-700/80">
-                  {d.name} —{' '}
+                  {d.name}:{' '}
                   <a
                     href={`https://www.youtube.com/watch?v=${d.videoId}`}
                     target="_blank"
@@ -69,7 +82,7 @@ export default function Credits() {
             .map((d) => (
               <li key={d.id} className="flex justify-between gap-4 border-b border-maroon-100 pb-2">
                 <span className="text-maroon-700/80">
-                  {d.name} —{' '}
+                  {d.name}:{' '}
                   <a
                     href={`https://www.youtube.com/watch?v=${d.videoId}`}
                     target="_blank"
@@ -118,7 +131,7 @@ export default function Credits() {
               <a href={r.url} target="_blank" rel="noreferrer" className="font-medium text-maroon-800 underline hover:text-maroon-900">
                 {r.title}
               </a>{' '}
-              — Library of Congress, public domain.
+              (Library of Congress, public domain)
             </li>
           ))}
         </ul>

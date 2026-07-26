@@ -64,7 +64,7 @@ const questions: Question[] = [
   },
   {
     trait: 'elegance',
-    prompt: 'Last one — what look are you drawn to?',
+    prompt: "Last one: what look are you drawn to?",
     options: [
       { label: 'Casual and easygoing', value: 1 },
       { label: 'Somewhere in the middle', value: 3 },

@@ -6,24 +6,24 @@ export interface ResourceLink {
 
 export const officialSyllabi: ResourceLink[] = [
   {
-    title: 'USA Dance — Appendix B Syllabus Guidebook',
+    title: 'USA Dance: Appendix B Syllabus Guidebook',
     url: 'https://cdn.ymaws.com/usadance.org/resource/resmgr/dancesport/documents/rule_book/2025/app_b_25_w_pre-bronze_usa_da.pdf',
     description:
       'The official American Style approved figures, elements, and level restrictions (Pre-Bronze through Gold), published by USA Dance.',
   },
   {
-    title: 'Dance Vision — American Smooth Bronze Syllabus Manual',
+    title: 'Dance Vision: American Smooth Bronze Syllabus Manual',
     url: 'https://shop.dancevision.com/products/american-smooth-bronze-syllabus-manual',
     description:
       "Dance Vision is USA Dance's preferred syllabus publisher for American Style. Covers Waltz, Tango, Foxtrot, and Viennese Waltz at Bronze level.",
   },
   {
-    title: 'Dance Vision — American Rhythm Bronze Syllabus Manual',
+    title: 'Dance Vision: American Rhythm Bronze Syllabus Manual',
     url: 'https://shop.dancevision.com/products/american-rhythm-bronze-syllabus-manual',
     description: 'Bronze-level figures for Cha Cha, Rumba, Swing, Bolero, and Mambo.',
   },
   {
-    title: 'NDCA — Approved Figures, Elements & Restrictions',
+    title: 'NDCA: Approved Figures, Elements & Restrictions',
     url: 'https://www.ndca.org/pdf/2023%20January%20-%205%20-%20NDCA%20APPROVED%20JAN%202023.pdf',
     description:
       'The official National Dance Council of America document governing International Standard and International Latin figures at every level.',
@@ -34,7 +34,7 @@ export const officialSyllabi: ResourceLink[] = [
     description: 'Official NDCA YouTube playlist demonstrating the International Latin syllabus figures.',
   },
   {
-    title: 'Collegiate DanceSport Association — Syllabus & Figure Resources',
+    title: 'Collegiate DanceSport Association: Syllabus & Figure Resources',
     url: 'https://collegiatedancesport.org/syllabus-and-figure-resources/',
     description: 'A hub of syllabus references maintained for US collegiate ballroom teams.',
   },
@@ -62,7 +62,7 @@ export const historyLinks: ResourceLink[] = [
       "The Library of Congress's digitized collection of over 200 public-domain social dance manuals, spanning five centuries.",
   },
   {
-    title: 'Video Directory — filmed illustrations of historical dance steps',
+    title: 'Video Directory: filmed illustrations of historical dance steps',
     url: 'https://www.loc.gov/collections/dance-instruction-manuals-from-1490-to-1920/articles-and-essays/video-directory/',
     description: '75 video clips illustrating figures described in the manuals above.',
   },
@@ -72,7 +72,7 @@ export const historyLinks: ResourceLink[] = [
     description: "An essay tracing social dance from the Renaissance through the early 20th century.",
   },
   {
-    title: 'Library of Congress — Dance Research Guide, Digital Collections',
+    title: 'Library of Congress: Dance Research Guide, Digital Collections',
     url: 'https://guides.loc.gov/dance/digital-collections',
     description: 'A research guide indexing all LOC digital dance collections, not just ballroom.',
   },

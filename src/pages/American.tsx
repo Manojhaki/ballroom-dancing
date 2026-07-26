@@ -6,12 +6,12 @@ const sections: { category: AmericanCategory; blurb: string }[] = [
   {
     category: 'Smooth',
     blurb:
-      'Waltz, Tango, Foxtrot, and Viennese Waltz — danced with more freedom than their International Standard counterparts, including open and separated figures.',
+      'Waltz, Tango, Foxtrot, and Viennese Waltz, danced with more freedom than their International Standard counterparts, including open and separated figures.',
   },
   {
     category: 'Rhythm',
     blurb:
-      'Cha Cha, Rumba, Swing, Bolero, and Mambo — the American take on Latin-rooted social dances, developed for US ballrooms and studios.',
+      'Cha Cha, Rumba, Swing, Bolero, and Mambo: the American take on Latin-rooted social dances, developed for US ballrooms and studios.',
   },
 ];
 

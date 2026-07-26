@@ -54,7 +54,7 @@ export default function Start() {
       <section className="mt-12">
         <h2 className="font-display text-2xl font-semibold text-maroon-900">Social dances</h2>
         <p className="mt-2 max-w-2xl text-sm text-maroon-700/80">
-          Outside the American/International competitive syllabi entirely — the dances you'll
+          Outside the American/International competitive syllabi entirely: the dances you'll
           actually run into at a night out, a social, or a club.
         </p>
         <RevealGrid className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">

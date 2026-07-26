@@ -32,7 +32,7 @@ export default function Resources() {
       </h1>
       <p className="mt-3 max-w-2xl text-maroon-700/85">
         This site paraphrases and summarizes, but figure lists and technique ultimately belong to
-        the organizations that publish them. These are the primary sources — linked directly,
+        the organizations that publish them. These are the primary sources, linked directly,
         never rehosted or copied.
       </p>
 
@@ -44,7 +44,7 @@ export default function Resources() {
       <section className="mt-12">
         <h2 className="font-display text-2xl font-semibold text-maroon-900">Free manuals</h2>
         <p className="mt-2 text-sm text-maroon-700/80">
-          Written for collegiate teams and freely shared — a good next step once the basics
+          Written for collegiate teams and freely shared. A good next step once the basics
           click.
         </p>
         <ResourceList items={freeManuals} />

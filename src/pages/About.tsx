@@ -10,16 +10,16 @@ export default function About() {
 
       <div className="mt-8 space-y-4 text-maroon-800">
         <p>
-          I started with no dance background at all, at an Arthur Murray chain studio — walked
+          I started with no dance background at all, at an Arthur Murray chain studio. I walked
           in cold, no partner, no idea what any of the terminology meant. That beginner class
           turned into a few years of dancing across a few different studios in a few different
-          states: a run of American Smooth showcases, then eventually competing Open Latin — Cha
+          states: a run of American Smooth showcases, then eventually competing Open Latin, Cha
           Cha, Samba, Rumba, and Jive, unrestricted by syllabus, judged on full routines instead
           of a fixed figure list.
         </p>
         <p>
-          Right now I'm on a break from dancing. That's a deliberate pause, not a quiet exit —
-          dancers step away and come back, and this site isn't going anywhere in the meantime.
+          Right now I'm on a break from dancing. That's a deliberate pause, not a quiet exit.
+          Dancers step away and come back, and this site isn't going anywhere in the meantime.
         </p>
         <p>
           What won't change: this site is one dancer's honest map of the beginner path, not an
@@ -34,7 +34,7 @@ export default function About() {
       <div className="mt-10 rounded-2xl border border-gold-200 bg-gold-50 p-6">
         <h2 className="font-display text-lg font-semibold text-gold-900">More dancing, on video</h2>
         <p className="mt-2 text-sm text-gold-900/90">
-          I post clips on YouTube — you'll find a few of them scattered across the dance pages on
+          I post clips on YouTube. You'll find a few of them scattered across the dance pages on
           this site, tagged "Danced by me." The rest are on the channel.
         </p>
         <a
@@ -55,8 +55,8 @@ export default function About() {
           <li className="rounded-xl border border-maroon-200 bg-white p-5">
             <p className="font-semibold text-maroon-900">Frame matters more than the steps.</p>
             <p className="mt-1 text-sm text-maroon-700/85">
-              I spent too long memorizing foot patterns before I understood that a good frame —
-              the connection through your arms and posture — is what actually lets you dance a
+              I spent too long memorizing foot patterns before I understood that a good frame,
+              the connection through your arms and posture, is what actually lets you dance a
               figure you've never drilled. The steps come easier once that clicks.
             </p>
           </li>
@@ -64,7 +64,7 @@ export default function About() {
             <p className="font-semibold text-maroon-900">It's fine to studio-hop.</p>
             <p className="mt-1 text-sm text-maroon-700/85">
               I didn't stay at the first studio I walked into, or the second. Chain studios,
-              independent studios, different cities — each one taught me something the last one
+              independent studios, different cities: each one taught me something the last one
               didn't, and none of that time was wasted.
             </p>
           </li>
@@ -72,14 +72,14 @@ export default function About() {
             <p className="font-semibold text-maroon-900">Mistakes are part of the dance, not a break in it.</p>
             <p className="mt-1 text-sm text-maroon-700/85">
               Every dancer messes up constantly, including the good ones. The move is to smile,
-              reset, and keep going — stopping to apologize disrupts your partner more than the
+              reset, and keep going. Stopping to apologize disrupts your partner more than the
               mistake did.
             </p>
           </li>
           <li className="rounded-xl border border-maroon-200 bg-white p-5">
             <p className="font-semibold text-maroon-900">Understanding the scoring took the mystery out of competing.</p>
             <p className="mt-1 text-sm text-maroon-700/85">
-              The skating system looks opaque from the outside — ordinal placements, sums, half
+              The skating system looks opaque from the outside: ordinal placements, sums, half
               marks. Once I understood it was just "lowest sum wins" with a tiebreak rule
               underneath, competing stopped feeling like a black box.
             </p>

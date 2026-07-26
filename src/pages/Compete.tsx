@@ -15,17 +15,17 @@ const firstComp: FaqItem[] = [
   {
     question: 'What actually happens at your first competition?',
     answer:
-      'You check in, warm up, and dance a series of short heats (often under 90 seconds each) in front of judges, usually multiple times across different dances and levels. Most newcomer events are Newcomer or Bronze — low-pressure, and it is completely normal to place last and still have a great time.',
+      'You check in, warm up, and dance a series of short heats (often under 90 seconds each) in front of judges, usually multiple times across different dances and levels. Most newcomer events are Newcomer or Bronze, low-pressure, and it is completely normal to place last and still have a great time.',
   },
   {
     question: 'What should I wear?',
     answer:
-      "For a first Newcomer/Bronze event, simple and clean beats flashy — a nice dress or a shirt/slacks combination works fine. Save rhinestones and competition-cut dresses for once you know you'll keep competing. Many newcomer divisions explicitly discourage over-the-top costuming.",
+      "For a first Newcomer/Bronze event, simple and clean beats flashy. A nice dress or a shirt/slacks combination works fine. Save rhinestones and competition-cut dresses for once you know you'll keep competing. Many newcomer divisions explicitly discourage over-the-top costuming.",
   },
   {
     question: 'Do I need my own partner?',
     answer:
-      'Not necessarily — many studios and collegiate teams run "partner rotation" or pair students with pro/am instructors for early competitions. Amateur couples (partnering another student) are common at collegiate and USA Dance events.',
+      'Not necessarily. Many studios and collegiate teams run "partner rotation" or pair students with pro/am instructors for early competitions. Amateur couples (partnering another student) are common at collegiate and USA Dance events.',
   },
 ];
 
@@ -38,7 +38,7 @@ export default function Compete() {
       </h1>
       <p className="mt-3 max-w-2xl text-maroon-700/85">
         Competing isn't required to enjoy ballroom, but if you're curious, here's what the path
-        actually looks like — from your first heat to how levels, scoring, and collegiate
+        actually looks like: from your first heat to how levels, scoring, and collegiate
         circuits work.
       </p>
 
@@ -48,7 +48,7 @@ export default function Compete() {
 
       <section className="mt-12">
         <h2 className="font-display text-2xl font-semibold text-maroon-900">
-          Closed vs. open — the distinction that actually matters
+          Closed vs. open: the distinction that actually matters
         </h2>
         <p className="mt-2 max-w-2xl text-sm text-maroon-700/80">
           Every level falls into one of two tracks. The mental model: <strong>closed = follow
@@ -105,7 +105,7 @@ export default function Compete() {
           >
             Collegiate DanceSport Association
           </a>
-          . Often the cheapest way into competition — many teams offer free or low-cost lessons
+          . Often the cheapest way into competition: many teams offer free or low-cost lessons
           and travel to regional competitions as a club sport rather than a paid studio program.
         </p>
       </section>
@@ -120,7 +120,7 @@ export default function Compete() {
         </h2>
         <p className="mt-2 text-sm text-maroon-700/85">
           Finding a partner for Open-level competition is a bigger commitment than a studio
-          pro-am pairing — you're both training, choreographing, and competing as a unit, not
+          pro-am pairing. You're both training, choreographing, and competing as a unit, not
           just showing up to the same lesson. I'll write up how that search actually went for me
           once I've got it down properly.
         </p>

@@ -1,5 +1,6 @@
 import { Link, Navigate, useParams } from 'react-router-dom';
 import { dances, getDanceById } from '../data/dances';
+import VideoEmbed from '../components/VideoEmbed';
 
 const traitList: { key: 'energy' | 'holdCloseness' | 'pace' | 'playfulness' | 'elegance'; label: string }[] = [
   { key: 'energy', label: 'Energy' },
@@ -71,50 +72,13 @@ export default function DanceDetail() {
       <p className="mt-4 max-w-2xl text-lg text-maroon-700/90">{dance.description}</p>
 
       <div className="mt-8">
-        {dance.videoIsOwn && (
-          <span className="mb-2 inline-block rounded-full bg-gold-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gold-800">
-            Danced by me
-          </span>
-        )}
-        <div
-          className={`overflow-hidden rounded-2xl border border-maroon-200 bg-black shadow-sm ${
-            dance.videoOrientation === 'vertical' ? 'mx-auto aspect-[9/16] max-w-xs' : 'aspect-video w-full'
-          }`}
-        >
-          <iframe
-            className="h-full w-full"
-            src={`https://www.youtube.com/embed/${dance.videoId}`}
-            title={dance.videoTitle}
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-            referrerPolicy="strict-origin-when-cross-origin"
-            allowFullScreen
-          />
-        </div>
+        <VideoEmbed
+          videoId={dance.videoId}
+          title={dance.videoTitle}
+          orientation={dance.videoOrientation}
+          isOwn={dance.videoIsOwn}
+        />
       </div>
-      <p className="mt-2 text-sm text-maroon-700/70">
-        {dance.videoTitle} —{' '}
-        <a
-          href={`https://www.youtube.com/watch?v=${dance.videoId}`}
-          target="_blank"
-          rel="noreferrer"
-          className="font-medium text-maroon-800 underline hover:text-maroon-900"
-        >
-          {dance.videoIsOwn ? 'watch on YouTube' : 'open on YouTube'}
-        </a>
-        {dance.videoIsOwn && (
-          <>
-            {' · '}
-            <a
-              href="https://www.youtube.com/@PartTimeBallroomDancing"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium text-maroon-800 underline hover:text-maroon-900"
-            >
-              more on my channel
-            </a>
-          </>
-        )}
-      </p>
 
       <div className="mt-10 grid gap-8 sm:grid-cols-2">
         <div className="rounded-2xl border-l-4 border-l-maroon-500 bg-maroon-50 p-6">
@@ -175,7 +139,7 @@ export default function DanceDetail() {
         <div className="mt-8 rounded-2xl border-l-4 border-l-maroon-500 bg-maroon-50 p-6">
           <h2 className="font-display text-lg font-semibold text-maroon-900">Bronze-level figures</h2>
           <p className="mt-1 text-xs text-maroon-700/70">
-            Names only — for full technique, see the official syllabus below.
+            Names only. For full technique, see the official syllabus below.
           </p>
           <ul className="mt-3 flex flex-wrap gap-2">
             {dance.bronzeFigures.map((f) => (

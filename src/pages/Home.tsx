@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { dances } from '../data/dances';
 import { RevealGrid, RevealItem } from '../components/RevealGrid';
+import VideoEmbed from '../components/VideoEmbed';
 
 const entryPaths = [
   {
@@ -21,7 +22,7 @@ const entryPaths = [
     to: '/resources',
     title: 'I want the official stuff',
     description:
-      'Direct links to USA Dance, NDCA, and Dance Vision syllabi, plus free manuals — the primary sources, not a paraphrase.',
+      'Direct links to USA Dance, NDCA, and Dance Vision syllabi, plus free manuals: the primary sources, not a paraphrase.',
     cta: 'Browse resources',
   },
 ];
@@ -32,43 +33,52 @@ export default function Home() {
   return (
     <div>
       <section className="relative overflow-hidden border-b border-maroon-200/60">
-        <div className="mx-auto max-w-6xl px-4 py-20 sm:px-6 sm:py-28">
-          <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold-600">
-            A friend once asked me
-          </p>
-          <h1 className="max-w-3xl font-display text-4xl font-semibold leading-tight text-maroon-900 sm:text-5xl md:text-6xl">
-            "I wonder what it's like to be inside music."
-          </h1>
-          <div className="mt-6 max-w-xl space-y-4 text-lg text-maroon-700/90">
-            <p>
-              I didn't have a good answer at the time. Ballroom dancing turned out to be the
-              closest I've come to one.
+        <div className="mx-auto grid max-w-6xl gap-10 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:items-start lg:gap-16">
+          <div>
+            <p className="mb-3 text-sm font-semibold uppercase tracking-widest text-gold-600">
+              A friend once asked me
             </p>
-            <p>
-              I walked into a beginner class at a chain studio with zero experience, expecting
-              to feel out of place. A few studios and a few years later — some American Smooth
-              showcases, a lot of group classes — I was competing Open Latin: Cha Cha, Samba,
-              Rumba, Jive, four minutes at a time.
-            </p>
-            <p>
-              I'm on a break from dancing right now, and that's fine — dancers step away and
-              come back. This site isn't going anywhere in the meantime.
-            </p>
+            <h1 className="font-display text-4xl font-semibold leading-tight text-maroon-900 sm:text-5xl md:text-6xl">
+              "I wonder what it's like to be inside music."
+            </h1>
+            <div className="mt-6 max-w-xl space-y-4 text-lg text-maroon-700/90">
+              <p>
+                I didn't have a good answer at the time. Ballroom dancing turned out to be the
+                closest I've come to one.
+              </p>
+              <p>
+                I walked into a beginner class at a chain studio with zero experience, expecting
+                to feel out of place. A few studios and a few years later (some American Smooth
+                showcases, a lot of group classes), I was competing Open Latin: Cha Cha, Samba,
+                Rumba, Jive, four minutes at a time.
+              </p>
+              <p>
+                I'm on a break from dancing right now, and that's fine. Dancers step away and
+                come back. This site isn't going anywhere in the meantime.
+              </p>
+            </div>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <Link
+                to="/start"
+                className="rounded-full bg-maroon-700 px-6 py-3 text-sm font-semibold text-gold-50 transition-colors hover:bg-maroon-800"
+              >
+                Start here
+              </Link>
+              <Link
+                to="/finder"
+                className="rounded-full border border-maroon-300 bg-white px-6 py-3 text-sm font-semibold text-maroon-800 transition-colors hover:bg-maroon-100"
+              >
+                Find your dance (2 min quiz)
+              </Link>
+            </div>
           </div>
-          <div className="mt-8 flex flex-wrap gap-3">
-            <Link
-              to="/start"
-              className="rounded-full bg-maroon-700 px-6 py-3 text-sm font-semibold text-gold-50 transition-colors hover:bg-maroon-800"
-            >
-              Start here
-            </Link>
-            <Link
-              to="/finder"
-              className="rounded-full border border-maroon-300 bg-white px-6 py-3 text-sm font-semibold text-maroon-800 transition-colors hover:bg-maroon-100"
-            >
-              Find your dance (2 min quiz)
-            </Link>
-          </div>
+
+          <VideoEmbed
+            videoId="EdTWw0In1HM"
+            title="Welcome to Part Time Ballroom Dancing"
+            orientation="horizontal"
+            isOwn
+          />
         </div>
       </section>
 

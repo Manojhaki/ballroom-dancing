@@ -137,7 +137,7 @@ export default function Layout() {
       <footer className="border-t border-maroon-200/60 bg-maroon-50">
         <div className="mx-auto max-w-6xl px-4 py-8 text-sm text-maroon-700/80 sm:px-6">
           <p>
-            Part Time Ballroom Dancing — a personal, first-hand starting point for people curious
+            Part Time Ballroom Dancing: a personal, first-hand starting point for people curious
             about ballroom dancing. Not affiliated with any studio or federation.
           </p>
           <p className="mt-2">
@@ -151,7 +151,7 @@ export default function Layout() {
               CC BY-NC-SA 4.0
             </a>
             . Linked syllabi, videos, and archival material remain the property of their
-            respective organizations — see{' '}
+            respective organizations. See{' '}
             <NavLink to="/credits" className="underline hover:text-maroon-900">
               credits
             </NavLink>{' '}

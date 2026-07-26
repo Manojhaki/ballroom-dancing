@@ -6,12 +6,12 @@ const sections: { category: InternationalCategory; blurb: string }[] = [
   {
     category: 'Standard',
     blurb:
-      'Waltz, Tango, Foxtrot, Quickstep, and Viennese Waltz — always danced in closed hold, with more rigid technique than American Smooth. The system used worldwide in DanceSport competition.',
+      'Waltz, Tango, Foxtrot, Quickstep, and Viennese Waltz, always danced in closed hold, with more rigid technique than American Smooth. The system used worldwide in DanceSport competition.',
   },
   {
     category: 'Latin',
     blurb:
-      'Cha Cha, Samba, Rumba, Paso Doble, and Jive — sharper and more codified than American Rhythm, with distinct technique for each dance.',
+      'Cha Cha, Samba, Rumba, Paso Doble, and Jive: sharper and more codified than American Rhythm, with distinct technique for each dance.',
   },
 ];
 

@@ -10,7 +10,7 @@ export default function History() {
       <p className="mt-3 max-w-2xl text-maroon-700/85">
         Ballroom dancing has a written record going back over 500 years. The Library of Congress
         holds the largest public-domain digitized collection of social dance instruction manuals
-        anywhere — genuinely worth a browse if you're curious where any of this actually came
+        anywhere. Genuinely worth a browse if you're curious where any of this actually came
         from.
       </p>
 
@@ -34,7 +34,7 @@ export default function History() {
 
       <p className="mt-8 text-sm text-maroon-700/70">
         All material linked above is hosted directly by the Library of Congress and is in the
-        public domain. Nothing here is rehosted — follow the links to view or download originals.
+        public domain. Nothing here is rehosted. Follow the links to view or download originals.
       </p>
     </div>
   );
