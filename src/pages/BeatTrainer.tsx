@@ -33,6 +33,43 @@ function beatsPerBar(timeSignature: string): number {
   return Number(timeSignature.split('/')[0]) || 4;
 }
 
+/**
+ * A short, genuinely silent WAV as a data URI. iOS WebKit (Safari and, since it's
+ * required to use the same engine, Chrome/every other iOS browser) mutes raw Web
+ * Audio API output whenever the hardware ring/silent switch is flipped, *unless*
+ * the page also has a real <audio>/<video> element actively playing — that shifts
+ * the page's audio session into the category iOS doesn't silence. Looping this
+ * while the metronome runs "unlocks" the click sounds on affected devices.
+ */
+function createSilentWavDataUri(durationSec = 0.2, sampleRate = 8000): string {
+  const numSamples = Math.floor(durationSec * sampleRate);
+  const dataSize = numSamples * 2; // 16-bit mono
+  const buffer = new ArrayBuffer(44 + dataSize);
+  const view = new DataView(buffer);
+  const writeString = (offset: number, s: string) => {
+    for (let i = 0; i < s.length; i += 1) view.setUint8(offset + i, s.charCodeAt(i));
+  };
+  writeString(0, 'RIFF');
+  view.setUint32(4, 36 + dataSize, true);
+  writeString(8, 'WAVE');
+  writeString(12, 'fmt ');
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  writeString(36, 'data');
+  view.setUint32(40, dataSize, true);
+  // remaining bytes are zero-initialized -- genuine silence
+  let binary = '';
+  new Uint8Array(buffer).forEach((byte) => {
+    binary += String.fromCharCode(byte);
+  });
+  return `data:audio/wav;base64,${btoa(binary)}`;
+}
+
 const PULSE = {
   spring: { type: 'spring' as const, stiffness: 400, damping: 22 },
 };
@@ -147,6 +184,8 @@ const DANCE_GROUPS: { label: string; ids: string[] }[] = [
   },
 ];
 
+const SILENT_UNLOCK_SRC = createSilentWavDataUri();
+
 export default function BeatTrainer() {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialDance = getDanceById(searchParams.get('dance') ?? '') ?? getDanceById('waltz')!;
@@ -154,6 +193,7 @@ export default function BeatTrainer() {
   const [speedPct, setSpeedPct] = useState(75);
   const [playing, setPlaying] = useState(false);
   const [audioBlocked, setAudioBlocked] = useState(false);
+  const unlockAudioRef = useRef<HTMLAudioElement | null>(null);
 
   const dance = getDanceById(selectedId) ?? dances[0];
   const { rate, unit } = useMemo(() => parseTempo(dance.tempo), [dance]);
@@ -167,6 +207,7 @@ export default function BeatTrainer() {
 
   useEffect(() => {
     setPlaying(false);
+    unlockAudioRef.current?.pause();
   }, [selectedId]);
 
   const selectDance = (d: Dance) => {
@@ -181,8 +222,10 @@ export default function BeatTrainer() {
         .resume()
         .then(() => setAudioBlocked(ctx.state !== 'running'))
         .catch(() => setAudioBlocked(true));
+      unlockAudioRef.current?.play().catch(() => {}); // ignore -- best-effort iOS unlock
     } else {
       setAudioBlocked(false);
+      unlockAudioRef.current?.pause();
     }
     setPlaying((p) => !p);
   };
@@ -307,6 +350,8 @@ export default function BeatTrainer() {
           Go to {dance.name}
         </Link>
       </p>
+
+      <audio ref={unlockAudioRef} src={SILENT_UNLOCK_SRC} loop preload="auto" hidden />
     </div>
   );
 }
