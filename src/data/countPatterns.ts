@@ -92,4 +92,43 @@ export const countPatterns: Record<string, { pattern: CountPattern; description:
     description:
       'Samba bounces "1-a-2" — 1 held for three-quarters of a beat, a quick "a" pickup, then a full beat on 2. The accent lands on 1.',
   },
+  jive: {
+    pattern: {
+      // Quick, Quick, then two syncopated triples -- one bar of Jive's 4/4 time. Each
+      // triple's first sub-step is held 3/4 beat, a quick "&" pickup at the 3/4 mark, then
+      // a full beat on the triple's last sub-step.
+      cycleBeats: 6,
+      steps: [
+        { label: '1', beatOffset: 0 }, // Quick
+        { label: '2', beatOffset: 1 }, // Quick
+        { label: '3', beatOffset: 2, accent: true }, // Triple
+        { label: '&', beatOffset: 2.75 },
+        { label: '4', beatOffset: 3 },
+        { label: '5', beatOffset: 4 }, // Triple
+        { label: '&', beatOffset: 4.75 },
+        { label: '6', beatOffset: 5 },
+      ],
+    },
+    description:
+      'Jive is Quick, Quick, then two syncopated triples — 3-&-4 and 5-&-6, each a sharp 3/4-beat, 1/4-beat, full-beat snap. The accent lands on 3, the first triple.',
+  },
+  'east-coast-swing': {
+    pattern: {
+      // Two triples, then the rock step -- one bar of East Coast Swing's 4/4 time. Same
+      // shape as Jive's triples but split evenly (half/half) rather than syncopated.
+      cycleBeats: 6,
+      steps: [
+        { label: '1', beatOffset: 0 }, // Triple
+        { label: '&', beatOffset: 0.5 },
+        { label: '2', beatOffset: 1 },
+        { label: '3', beatOffset: 2 }, // Triple
+        { label: '&', beatOffset: 2.5 },
+        { label: '4', beatOffset: 3 },
+        { label: '5', beatOffset: 4, accent: true }, // Rock step
+        { label: '6', beatOffset: 5 },
+      ],
+    },
+    description:
+      'East Coast Swing is two even triples — 1-&-2 and 3-&-4 — followed by the rock step on 5-6, which carries the accent.',
+  },
 };
