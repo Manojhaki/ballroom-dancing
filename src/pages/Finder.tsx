@@ -12,7 +12,7 @@
  *  150ms + rank*150ms   each match percentage counts up from 0
  * ───────────────────────────────────────────────────────── */
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AnimatePresence, motion, useMotionValue, useTransform, animate, useMotionValueEvent } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { dances, type Dance } from '../data/dances';
@@ -84,6 +84,23 @@ function matchScore(answers: Record<TraitKey, number>, dance: Dance) {
   return Math.round(100 - (distance / MAX_DISTANCE) * 100);
 }
 
+const TRAIT_LABELS: Record<TraitKey, string> = {
+  pace: 'pace',
+  holdCloseness: 'closeness',
+  energy: 'energy',
+  playfulness: 'playfulness',
+  elegance: 'elegance',
+};
+
+/** The traits where your answer landed closest to this dance, for a "why this matched" hint */
+function closestTraits(answers: Record<TraitKey, number>, dance: Dance, count = 2): TraitKey[] {
+  return (Object.keys(answers) as TraitKey[])
+    .map((trait) => ({ trait, diff: Math.abs(answers[trait] - dance.traits[trait]) }))
+    .sort((a, b) => a.diff - b.diff)
+    .slice(0, count)
+    .map(({ trait }) => trait);
+}
+
 /* Timing for the click → advance beat and question-card travel */
 const TIMING = {
   selectionHold: 280, // ms the clicked option stays highlighted before advancing
@@ -137,8 +154,14 @@ export default function Finder() {
   const [direction, setDirection] = useState(1);
   const [selected, setSelected] = useState<number | null>(null);
   const [answers, setAnswers] = useState<Partial<Record<TraitKey, number>>>({});
+  const [showAll, setShowAll] = useState(false);
+  const headingRef = useRef<HTMLHeadingElement>(null);
 
   const isComplete = step >= questions.length;
+
+  useEffect(() => {
+    headingRef.current?.focus();
+  }, [step, isComplete]);
 
   const results = isComplete
     ? [...dances]
@@ -166,8 +189,22 @@ export default function Finder() {
     setAnswers({});
     setDirection(1);
     setSelected(null);
+    setShowAll(false);
     setStep(0);
   };
+
+  useEffect(() => {
+    if (isComplete || selected !== null) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const optionIndex = Number(e.key) - 1;
+      const options = questions[step].options;
+      if (Number.isInteger(optionIndex) && optionIndex >= 0 && optionIndex < options.length) {
+        handleAnswer(questions[step].trait, options[optionIndex].value, optionIndex);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [step, selected, isComplete]);
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
@@ -182,7 +219,14 @@ export default function Finder() {
 
       {!isComplete ? (
         <div className="mt-10">
-          <div className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-maroon-100">
+          <div
+            className="mb-6 h-1.5 w-full overflow-hidden rounded-full bg-maroon-100"
+            role="progressbar"
+            aria-label="Quiz progress"
+            aria-valuemin={0}
+            aria-valuemax={questions.length}
+            aria-valuenow={step}
+          >
             <motion.div
               className="h-full rounded-full bg-maroon-600"
               animate={{ width: `${(step / questions.length) * 100}%` }}
@@ -201,16 +245,26 @@ export default function Finder() {
               <p className="text-sm font-medium text-maroon-500">
                 Question {step + 1} of {questions.length}
               </p>
-              <h2 className="mt-2 font-display text-2xl font-semibold text-maroon-900">
+              <h2
+                ref={headingRef}
+                tabIndex={-1}
+                className="mt-2 font-display text-2xl font-semibold text-maroon-900 outline-none"
+              >
                 {questions[step].prompt}
               </h2>
-              <div className="mt-6 flex flex-col gap-3">
+              <div
+                role="radiogroup"
+                aria-label={questions[step].prompt}
+                className="mt-6 flex flex-col gap-3"
+              >
                 {questions[step].options.map((opt, i) => {
                   const isSelected = selected === i;
                   return (
                     <motion.button
                       key={opt.label}
                       type="button"
+                      role="radio"
+                      aria-checked={isSelected}
                       disabled={selected !== null}
                       onClick={() => handleAnswer(questions[step].trait, opt.value, i)}
                       initial={{ opacity: 0, y: OPTIONS.offsetY }}
@@ -234,6 +288,9 @@ export default function Finder() {
                         {isSelected && <span className="h-2 w-2 rounded-full bg-white" />}
                       </span>
                       {opt.label}
+                      <span className="ml-auto flex-shrink-0 text-xs font-normal text-maroon-400">
+                        {i + 1}
+                      </span>
                     </motion.button>
                   );
                 })}
@@ -253,50 +310,83 @@ export default function Finder() {
         </div>
       ) : (
         <div className="mt-10">
-          <h2 className="font-display text-2xl font-semibold text-maroon-900">Your top matches</h2>
+          <h2
+            ref={headingRef}
+            tabIndex={-1}
+            className="font-display text-2xl font-semibold text-maroon-900 outline-none"
+          >
+            Your top matches
+          </h2>
           <div className="mt-6 space-y-4">
-            {results.slice(0, 3).map(({ dance, score }, i) => (
-              <motion.div
-                key={dance.id}
-                initial={{ opacity: 0, y: RESULTS.offsetY }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ ...RESULTS.spring, delay: i * RESULTS.stagger }}
-              >
-                <Link
-                  to={`/dance/${dance.id}`}
-                  className={`flex items-center gap-4 rounded-2xl border bg-white p-5 transition-all hover:-translate-y-1 hover:shadow-md ${
-                    i === 0 ? 'border-l-4 border-l-gold-500 border-y-maroon-200 border-r-maroon-200' : 'border-maroon-200'
-                  }`}
+            {(showAll ? results : results.slice(0, 3)).map(({ dance, score }, i) => {
+              const matchedTraits = closestTraits(answers as Record<TraitKey, number>, dance);
+              return (
+                <motion.div
+                  key={dance.id}
+                  initial={{ opacity: 0, y: RESULTS.offsetY }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ ...RESULTS.spring, delay: Math.min(i, 2) * RESULTS.stagger }}
                 >
-                  <span
-                    className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full font-display text-lg font-semibold ${
-                      i === 0 ? 'bg-gold-500 text-maroon-950' : 'bg-gold-100 text-gold-800'
+                  <Link
+                    to={`/dance/${dance.id}`}
+                    className={`flex items-center gap-4 rounded-2xl border bg-white p-5 transition-all hover:-translate-y-1 hover:shadow-md ${
+                      i === 0 ? 'border-l-4 border-l-gold-500 border-y-maroon-200 border-r-maroon-200' : 'border-maroon-200'
                     }`}
                   >
-                    {i + 1}
-                  </span>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="font-display text-lg font-semibold text-maroon-900">
-                        {dance.name}
-                      </span>
-                      <span className="text-sm font-semibold text-maroon-600">
-                        <AnimatedPercent value={score} delay={i * RESULTS.countStaggerDelay} />
-                      </span>
+                    <span
+                      className={`flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full font-display text-lg font-semibold ${
+                        i === 0 ? 'bg-gold-500 text-maroon-950' : 'bg-gold-100 text-gold-800'
+                      }`}
+                    >
+                      {i + 1}
+                    </span>
+                    <div className="flex-1">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="font-display text-lg font-semibold text-maroon-900">
+                          {dance.name}
+                        </span>
+                        <span className="text-sm font-semibold text-maroon-600">
+                          <AnimatedPercent value={score} delay={Math.min(i, 2) * RESULTS.countStaggerDelay} />
+                        </span>
+                      </div>
+                      <p className="mt-1 text-sm text-maroon-700/80 line-clamp-2">{dance.description}</p>
+                      <p className="mt-2 text-xs font-medium text-maroon-500">
+                        Closest on your {matchedTraits.map((t) => TRAIT_LABELS[t]).join(' & ')} answers
+                      </p>
+                      <div className="mt-2 flex flex-wrap gap-1.5">
+                        {dance.moodTags.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full bg-maroon-50 px-2.5 py-0.5 text-xs font-medium text-maroon-700"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                    <p className="mt-1 text-sm text-maroon-700/80 line-clamp-2">{dance.description}</p>
-                  </div>
-                </Link>
-              </motion.div>
-            ))}
+                  </Link>
+                </motion.div>
+              );
+            })}
           </div>
-          <button
-            type="button"
-            onClick={restart}
-            className="mt-8 rounded-full border border-maroon-300 bg-white px-6 py-2.5 text-sm font-semibold text-maroon-800 transition-colors hover:bg-maroon-100"
-          >
-            Retake the quiz
-          </button>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={restart}
+              className="rounded-full border border-maroon-300 bg-white px-6 py-2.5 text-sm font-semibold text-maroon-800 transition-colors hover:bg-maroon-100"
+            >
+              Retake the quiz
+            </button>
+            {results.length > 3 && (
+              <button
+                type="button"
+                onClick={() => setShowAll((v) => !v)}
+                className="rounded-full px-6 py-2.5 text-sm font-semibold text-maroon-600 transition-colors hover:text-maroon-800"
+              >
+                {showAll ? 'Show top 3 only' : `See all ${results.length} matches`}
+              </button>
+            )}
+          </div>
         </div>
       )}
     </div>
