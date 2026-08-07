@@ -14,6 +14,7 @@ import Finder from './pages/Finder';
 import BeatTrainer from './pages/BeatTrainer';
 import SongFinder from './pages/SongFinder';
 import FigureDrill from './pages/FigureDrill';
+import RhythmMatch from './pages/RhythmMatch';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
         <Route path="beat-trainer" element={<BeatTrainer />} />
         <Route path="songs" element={<SongFinder />} />
         <Route path="drill" element={<FigureDrill />} />
+        <Route path="rhythm-game" element={<RhythmMatch />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

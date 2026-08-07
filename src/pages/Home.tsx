@@ -138,6 +138,23 @@ export default function Home() {
       <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
         <PracticeTools />
       </div>
+
+      <section className="border-t border-maroon-200/60 bg-maroon-100/40">
+        <div className="mx-auto max-w-6xl px-4 py-16 text-center sm:px-6">
+          <h2 className="font-display text-2xl font-semibold text-maroon-900 sm:text-3xl">
+            Think you've got the rhythm?
+          </h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-maroon-700/80">
+            Sixteen beats, real tempo, no slowing down. Tap along and see how close you land.
+          </p>
+          <Link
+            to="/rhythm-game"
+            className="mt-5 inline-block rounded-full bg-maroon-700 px-6 py-2.5 text-sm font-semibold text-gold-50 transition-colors hover:bg-maroon-800"
+          >
+            Play Rhythm Match
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

@@ -122,6 +122,12 @@ export default function DanceDetail() {
                 Drill these figures →
               </Link>
             )}
+            <Link
+              to={`/rhythm-game?dance=${dance.id}`}
+              className="inline-block text-sm font-medium text-maroon-700 underline hover:text-maroon-900"
+            >
+              Play the rhythm game →
+            </Link>
           </div>
         </div>
 
