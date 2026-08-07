@@ -13,6 +13,7 @@ import Credits from './pages/Credits';
 import Finder from './pages/Finder';
 import BeatTrainer from './pages/BeatTrainer';
 import SongFinder from './pages/SongFinder';
+import FigureDrill from './pages/FigureDrill';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
         <Route path="finder" element={<Finder />} />
         <Route path="beat-trainer" element={<BeatTrainer />} />
         <Route path="songs" element={<SongFinder />} />
+        <Route path="drill" element={<FigureDrill />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

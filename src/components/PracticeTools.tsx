@@ -23,6 +23,13 @@ const TOOLS = [
     cta: 'Find songs',
     filled: false,
   },
+  {
+    to: '/drill',
+    title: 'Figure Drill',
+    description: 'A random combo of Bronze figures to run through, by dance.',
+    cta: 'Get a combo',
+    filled: false,
+  },
 ];
 
 export default function PracticeTools({ heading = true }: { heading?: boolean }) {
@@ -34,11 +41,11 @@ export default function PracticeTools({ heading = true }: { heading?: boolean })
             Practice tools
           </h2>
           <p className="mt-2 max-w-2xl text-sm text-maroon-700/80">
-            Three small tools for the space between "I read about it" and "I can do it."
+            Small tools for the space between "I read about it" and "I can do it."
           </p>
         </div>
       )}
-      <RevealGrid className="grid gap-5 sm:grid-cols-3">
+      <RevealGrid className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {TOOLS.map((tool) => (
           <RevealItem key={tool.to}>
             <div className="flex h-full flex-col rounded-2xl border border-gold-200 bg-gold-50 p-6 text-center">

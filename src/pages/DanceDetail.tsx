@@ -114,6 +114,14 @@ export default function DanceDetail() {
             >
               Songs to try →
             </Link>
+            {dance.bronzeFigures.length > 0 && (
+              <Link
+                to={`/drill?dance=${dance.id}`}
+                className="inline-block text-sm font-medium text-maroon-700 underline hover:text-maroon-900"
+              >
+                Drill these figures →
+              </Link>
+            )}
           </div>
         </div>
 
