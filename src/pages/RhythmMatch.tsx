@@ -11,7 +11,8 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { dances, getDanceById, type Dance } from '../data/dances';
 import { DANCE_GROUPS } from '../data/danceGroups';
-import { parseTempo, beatsPerBar, createSilentWavDataUri, useAudioContext, useMetronome } from '../lib/metronome';
+import { countPatterns } from '../data/countPatterns';
+import { parseTempo, beatsPerBar, defaultPattern, createSilentWavDataUri, useAudioContext, useMetronome } from '../lib/metronome';
 
 const ROUND_LENGTH = 16;
 const PERFECT_WINDOW_MS = 80;
@@ -67,7 +68,9 @@ export default function RhythmMatch() {
   const dance = getDanceById(selectedId) ?? dances[0];
   const { rate, unit } = useMemo(() => parseTempo(dance.tempo), [dance]);
   const perBar = useMemo(() => beatsPerBar(dance.timeSignature), [dance]);
-  const isDownbeat = (clickIndex: number) => unit === 'bpm' && clickIndex % perBar === 0;
+  const verified = countPatterns[dance.id];
+  const pattern = useMemo(() => verified?.pattern ?? defaultPattern(unit, perBar), [verified, unit, perBar]);
+  const cyclesPerMinute = unit === 'bpm' ? rate / pattern.cycleBeats : rate;
 
   const { audioCtxRef, start: startAudio } = useAudioContext();
 
@@ -107,9 +110,9 @@ export default function RhythmMatch() {
     }
   };
 
-  const currentClick = useMetronome({
-    clicksPerMinute: rate,
-    isDownbeat,
+  const currentStep = useMetronome({
+    pattern,
+    cyclesPerMinute,
     playing: roundActive,
     audioCtxRef,
     volumeRef,
@@ -210,7 +213,7 @@ export default function RhythmMatch() {
 
   const totalTaps = tierCounts.perfect + tierCounts.good + tierCounts.off + tierCounts.miss;
   const accuracy = totalTaps > 0 ? Math.round(((tierCounts.perfect + tierCounts.good) / totalTaps) * 100) : 0;
-  const beatInBar = unit === 'bpm' ? (currentClick % perBar) + 1 : null;
+  const displayStep = currentStep ?? pattern.steps[0];
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6">
@@ -265,7 +268,7 @@ export default function RhythmMatch() {
           <div className="mt-4 flex items-center justify-center gap-6 text-sm">
             <span className="font-medium text-maroon-800">Score {score}</span>
             <span className="font-medium text-maroon-800">Streak {streak}</span>
-            <span className="text-maroon-700/70">Beat {currentClick + 1}/{ROUND_LENGTH}</span>
+            <span className="text-maroon-700/70">Beat {(currentStep?.index ?? -1) + 1}/{ROUND_LENGTH}</span>
           </div>
         )}
 
@@ -290,13 +293,13 @@ export default function RhythmMatch() {
           <motion.button
             type="button"
             onClick={phase === 'playing' ? handleTap : startRound}
-            key={phase === 'playing' ? currentClick : phase}
-            initial={phase === 'playing' ? { scale: beatInBar === 1 ? 1.15 : 1.05, opacity: 1 } : { scale: 1 }}
+            key={phase === 'playing' ? currentStep?.index : phase}
+            initial={phase === 'playing' ? { scale: displayStep.accent ? 1.15 : 1.05, opacity: 1 } : { scale: 1 }}
             animate={{ scale: 1, opacity: phase === 'playing' ? 0.85 : 1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 22 }}
             className={`flex h-32 w-32 items-center justify-center rounded-full font-display text-lg font-semibold transition-colors ${
               phase === 'playing'
-                ? beatInBar === 1
+                ? displayStep.accent
                   ? 'bg-gold-500 text-maroon-950'
                   : 'bg-maroon-600 text-white'
                 : 'bg-maroon-700 text-gold-50 hover:bg-maroon-800'

@@ -19,6 +19,42 @@ export function beatsPerBar(timeSignature: string): number {
   return Number(timeSignature.split('/')[0]) || 4;
 }
 
+/** One step within a repeating count cycle (one bar) */
+export interface CountStep {
+  /** What's shown/announced, e.g. '1', '2', '&' */
+  label: string;
+  /** Position within the cycle, in beats, ascending from 0 -- fractional for off-beats like the '&' */
+  beatOffset: number;
+  accent?: boolean;
+}
+
+/** A dance's repeating count structure -- one cycle is one bar */
+export interface CountPattern {
+  cycleBeats: number;
+  steps: CountStep[];
+}
+
+/**
+ * The generic pattern used for any dance without a verified count pattern -- reproduces
+ * the metronome's original behavior exactly: `bpm` dances click every beat with the
+ * downbeat accented, `bars/min` dances click once per bar with no accent (studios publish
+ * these in bars because how many steps fit in a bar varies dance to dance, and guessing a
+ * bars-to-beats conversion doesn't hold universally -- see Beat Trainer's explainer text).
+ */
+export function defaultPattern(unit: TempoUnit, cycleBeats: number): CountPattern {
+  if (unit === 'bars/min') {
+    return { cycleBeats, steps: [{ label: 'Bar', beatOffset: 0, accent: false }] };
+  }
+  return {
+    cycleBeats,
+    steps: Array.from({ length: cycleBeats }, (_, i) => ({
+      label: String(i + 1),
+      beatOffset: i,
+      accent: i === 0,
+    })),
+  };
+}
+
 /**
  * A short, genuinely silent WAV as a data URI. iOS WebKit (Safari and, since it's
  * required to use the same engine, Chrome/every other iOS browser) mutes raw Web
@@ -92,30 +128,38 @@ export function useAudioContext() {
   return { audioCtxRef, start };
 }
 
-export function useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef, volumeRef, onClickScheduled }: {
-  clicksPerMinute: number;
-  isDownbeat: (clickIndex: number) => boolean;
+export interface CurrentStep {
+  index: number;
+  label: string;
+  accent: boolean;
+}
+
+export function useMetronome({ pattern, cyclesPerMinute, playing, audioCtxRef, volumeRef, onClickScheduled }: {
+  pattern: CountPattern;
+  cyclesPerMinute: number;
   playing: boolean;
   audioCtxRef: RefObject<AudioContext | null>;
   volumeRef: RefObject<number>;
-  /** Fired at the moment each click is scheduled, with its exact AudioContext time */
+  /** Fired at the moment each step is scheduled, with its exact AudioContext time */
   onClickScheduled?: (time: number, index: number) => void;
 }) {
-  const [currentClick, setCurrentClick] = useState(0);
-  const nextClickTimeRef = useRef(0);
-  const clickIndexRef = useRef(0);
+  const [currentStep, setCurrentStep] = useState<CurrentStep | null>(null);
+  const cycleStartRef = useRef(0);
+  const stepPointerRef = useRef(0);
+  const globalIndexRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     if (!playing) {
-      setCurrentClick(0);
+      setCurrentStep(null);
       return;
     }
     const ctx = audioCtxRef.current;
     if (!ctx) return;
 
-    clickIndexRef.current = 0;
-    nextClickTimeRef.current = ctx.currentTime + 0.05;
+    stepPointerRef.current = 0;
+    globalIndexRef.current = 0;
+    cycleStartRef.current = ctx.currentTime + 0.05;
 
     const playClick = (time: number, accented: boolean) => {
       const osc = ctx.createOscillator();
@@ -130,17 +174,29 @@ export function useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef
       osc.stop(time + 0.07);
     };
 
-    const secondsPerClick = 60 / clicksPerMinute;
+    const secondsPerCycle = 60 / cyclesPerMinute;
+
+    const nextStepTime = () => {
+      const step = pattern.steps[stepPointerRef.current];
+      return cycleStartRef.current + secondsPerCycle * (step.beatOffset / pattern.cycleBeats);
+    };
 
     const tick = () => {
-      while (nextClickTimeRef.current < ctx.currentTime + SCHEDULER.scheduleAheadSec) {
-        const index = clickIndexRef.current;
-        playClick(nextClickTimeRef.current, isDownbeat(index));
-        onClickScheduled?.(nextClickTimeRef.current, index);
-        const delay = Math.max(0, nextClickTimeRef.current - ctx.currentTime) * 1000;
-        setTimeout(() => setCurrentClick(index), delay);
-        clickIndexRef.current += 1;
-        nextClickTimeRef.current += secondsPerClick;
+      while (nextStepTime() < ctx.currentTime + SCHEDULER.scheduleAheadSec) {
+        const step = pattern.steps[stepPointerRef.current];
+        const time = nextStepTime();
+        const index = globalIndexRef.current;
+        playClick(time, !!step.accent);
+        onClickScheduled?.(time, index);
+        const delay = Math.max(0, time - ctx.currentTime) * 1000;
+        setTimeout(() => setCurrentStep({ index, label: step.label, accent: !!step.accent }), delay);
+
+        globalIndexRef.current += 1;
+        stepPointerRef.current += 1;
+        if (stepPointerRef.current >= pattern.steps.length) {
+          stepPointerRef.current = 0;
+          cycleStartRef.current += secondsPerCycle;
+        }
       }
     };
 
@@ -151,7 +207,7 @@ export function useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef
       if (timerRef.current) clearInterval(timerRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [playing, clicksPerMinute]);
+  }, [playing, cyclesPerMinute, pattern]);
 
-  return currentClick;
+  return currentStep;
 }

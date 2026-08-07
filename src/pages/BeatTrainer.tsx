@@ -14,7 +14,8 @@ import { motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { dances, getDanceById, type Dance } from '../data/dances';
 import { DANCE_GROUPS } from '../data/danceGroups';
-import { parseTempo, beatsPerBar, createSilentWavDataUri, useAudioContext, useMetronome, type TempoUnit } from '../lib/metronome';
+import { countPatterns } from '../data/countPatterns';
+import { parseTempo, beatsPerBar, defaultPattern, createSilentWavDataUri, useAudioContext, useMetronome } from '../lib/metronome';
 
 const PULSE = {
   spring: { type: 'spring' as const, stiffness: 400, damping: 22 },
@@ -43,13 +44,21 @@ export default function BeatTrainer() {
   const { rate, unit: publishedUnit } = useMemo(() => parseTempo(dance.tempo), [dance]);
   const perBar = useMemo(() => beatsPerBar(dance.timeSignature), [dance]);
   // Tapping your own tempo always yields beats, regardless of how the dance's own tempo is published
-  const unit: TempoUnit = customBpm ? 'bpm' : publishedUnit;
-  const clicksPerMinute = customBpm ?? Math.round((rate * speedPct) / 100);
+  const unit = customBpm ? 'bpm' : publishedUnit;
+  const adjustedRate = customBpm ?? Math.round((rate * speedPct) / 100);
+
+  // Custom tap tempo doesn't carry a verified syncopation, so it falls back like any
+  // unverified dance would -- only the dance's own published tempo gets the real pattern.
+  const verified = customBpm ? undefined : countPatterns[dance.id];
+  const pattern = useMemo(
+    () => verified?.pattern ?? defaultPattern(unit, perBar),
+    [verified, unit, perBar],
+  );
+  const cyclesPerMinute = unit === 'bpm' ? adjustedRate / pattern.cycleBeats : adjustedRate;
 
   const { audioCtxRef, start: startAudio } = useAudioContext();
-  const isDownbeat = (clickIndex: number) => unit === 'bpm' && clickIndex % perBar === 0;
-  const currentClick = useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef, volumeRef });
-  const beatInBar = unit === 'bpm' ? (currentClick % perBar) + 1 : null;
+  const currentStep = useMetronome({ pattern, cyclesPerMinute, playing, audioCtxRef, volumeRef });
+  const displayStep = currentStep ?? pattern.steps[0];
 
   useEffect(() => {
     setPlaying(false);
@@ -153,24 +162,24 @@ export default function BeatTrainer() {
         <p className="mt-2 text-sm text-maroon-700/80">
           {customBpm
             ? `Tapped to ${customBpm} beats per minute — match this to whatever song you've got playing, and the accent still marks beat 1 of every ${perBar}-beat bar for this dance.`
-            : publishedUnit === 'bpm'
-              ? `Studios publish this one in beats per minute, so each click below is a beat — the accented click is beat 1 of every ${perBar}-beat bar.`
-              : `Studios publish this one in bars per minute rather than beats, since how many steps fit in a bar changes dance to dance. Each click below marks one full bar — count your own steps into the gap between clicks.`}
+            : verified
+              ? verified.description
+              : publishedUnit === 'bpm'
+                ? `Studios publish this one in beats per minute, so each click below is a beat — the accented click is beat 1 of every ${perBar}-beat bar.`
+                : `Studios publish this one in bars per minute rather than beats, since how many steps fit in a bar changes dance to dance. Each click below marks one full bar — count your own steps into the gap between clicks.`}
         </p>
 
         <div className="mt-8 flex flex-col items-center">
           <motion.div
-            key={currentClick}
-            initial={{ scale: beatInBar === 1 || unit === 'bars/min' ? 1.15 : 1.05, opacity: 1 }}
+            key={currentStep?.index ?? 'idle'}
+            initial={{ scale: displayStep.accent ? 1.15 : 1.05, opacity: 1 }}
             animate={{ scale: 1, opacity: 0.85 }}
             transition={PULSE.spring}
             className={`flex h-28 w-28 items-center justify-center rounded-full font-display text-2xl font-semibold ${
-              beatInBar === 1 || (unit === 'bars/min' && playing)
-                ? 'bg-gold-500 text-maroon-950'
-                : 'bg-maroon-600 text-white'
+              displayStep.accent ? 'bg-gold-500 text-maroon-950' : 'bg-maroon-600 text-white'
             }`}
           >
-            {unit === 'bpm' ? beatInBar ?? 1 : 'Bar'}
+            {displayStep.label}
           </motion.div>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
@@ -216,7 +225,7 @@ export default function BeatTrainer() {
                 Practice speed
               </label>
               <span className="text-maroon-700/80">
-                {speedPct}% · ≈{clicksPerMinute} {unit === 'bpm' ? 'beats' : 'bars'}/min
+                {speedPct}% · ≈{adjustedRate} {unit === 'bpm' ? 'beats' : 'bars'}/min
               </span>
             </div>
             <input
