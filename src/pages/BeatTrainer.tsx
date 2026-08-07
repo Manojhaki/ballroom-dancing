@@ -9,7 +9,7 @@
  * higher-pitched tone than the other beats in the bar.
  * ───────────────────────────────────────────────────────── */
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { dances, getDanceById, type Dance } from '../data/dances';
@@ -43,23 +43,55 @@ const SCHEDULER = {
   scheduleAheadSec: 0.1, // how far into the future clicks get queued
 };
 
-function useMetronome({ clicksPerMinute, isDownbeat, playing }: {
+/**
+ * Lazily creates the AudioContext and returns a `start()` you call synchronously
+ * inside the Play button's click handler. Browsers only let audio actually start
+ * playing when the context is created/resumed within that same user-gesture call
+ * stack — doing it a tick later from a useEffect (which fires after the click
+ * handler returns) leaves the context silently suspended.
+ */
+function useAudioContext() {
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  useEffect(() => {
+    return () => {
+      audioCtxRef.current?.close();
+      audioCtxRef.current = null;
+    };
+  }, []);
+
+  const start = () => {
+    if (!audioCtxRef.current) {
+      const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      audioCtxRef.current = new AudioContextClass();
+    }
+    // Must be called synchronously in the gesture handler, not awaited, to satisfy autoplay policy
+    void audioCtxRef.current.resume();
+    return audioCtxRef.current;
+  };
+
+  return { audioCtxRef, start };
+}
+
+function useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef }: {
   clicksPerMinute: number;
   isDownbeat: (clickIndex: number) => boolean;
   playing: boolean;
+  audioCtxRef: RefObject<AudioContext | null>;
 }) {
   const [currentClick, setCurrentClick] = useState(0);
-  const audioCtxRef = useRef<AudioContext | null>(null);
   const nextClickTimeRef = useRef(0);
   const clickIndexRef = useRef(0);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    if (!playing) return;
+    if (!playing) {
+      setCurrentClick(0);
+      return;
+    }
+    const ctx = audioCtxRef.current;
+    if (!ctx) return;
 
-    const AudioContextClass = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    const ctx = new AudioContextClass();
-    audioCtxRef.current = ctx;
     clickIndexRef.current = 0;
     nextClickTimeRef.current = ctx.currentTime + 0.05;
 
@@ -68,7 +100,7 @@ function useMetronome({ clicksPerMinute, isDownbeat, playing }: {
       const gain = ctx.createGain();
       osc.frequency.value = accented ? 1400 : 900;
       gain.gain.setValueAtTime(0.0001, time);
-      gain.gain.exponentialRampToValueAtTime(accented ? 0.35 : 0.22, time + 0.005);
+      gain.gain.exponentialRampToValueAtTime(accented ? 0.55 : 0.4, time + 0.005);
       gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
       osc.connect(gain).connect(ctx.destination);
       osc.start(time);
@@ -93,15 +125,9 @@ function useMetronome({ clicksPerMinute, isDownbeat, playing }: {
 
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
-      ctx.close();
-      audioCtxRef.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playing, clicksPerMinute]);
-
-  useEffect(() => {
-    if (!playing) setCurrentClick(0);
-  }, [playing]);
 
   return currentClick;
 }
@@ -127,14 +153,16 @@ export default function BeatTrainer() {
   const [selectedId, setSelectedId] = useState(initialDance.id);
   const [speedPct, setSpeedPct] = useState(75);
   const [playing, setPlaying] = useState(false);
+  const [audioBlocked, setAudioBlocked] = useState(false);
 
   const dance = getDanceById(selectedId) ?? dances[0];
   const { rate, unit } = useMemo(() => parseTempo(dance.tempo), [dance]);
   const perBar = useMemo(() => beatsPerBar(dance.timeSignature), [dance]);
   const clicksPerMinute = Math.round((rate * speedPct) / 100);
 
+  const { audioCtxRef, start: startAudio } = useAudioContext();
   const isDownbeat = (clickIndex: number) => unit === 'bpm' && clickIndex % perBar === 0;
-  const currentClick = useMetronome({ clicksPerMinute, isDownbeat, playing });
+  const currentClick = useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef });
   const beatInBar = unit === 'bpm' ? (currentClick % perBar) + 1 : null;
 
   useEffect(() => {
@@ -144,6 +172,19 @@ export default function BeatTrainer() {
   const selectDance = (d: Dance) => {
     setSelectedId(d.id);
     setSearchParams({ dance: d.id }, { replace: true });
+  };
+
+  const togglePlay = () => {
+    if (!playing) {
+      const ctx = startAudio(); // must happen synchronously in this click handler
+      ctx
+        .resume()
+        .then(() => setAudioBlocked(ctx.state !== 'running'))
+        .catch(() => setAudioBlocked(true));
+    } else {
+      setAudioBlocked(false);
+    }
+    setPlaying((p) => !p);
   };
 
   return (
@@ -221,12 +262,18 @@ export default function BeatTrainer() {
 
           <button
             type="button"
-            onClick={() => setPlaying((p) => !p)}
+            onClick={togglePlay}
             aria-pressed={playing}
             className="mt-6 rounded-full bg-maroon-700 px-8 py-3 text-sm font-semibold text-gold-50 transition-colors hover:bg-maroon-800"
           >
             {playing ? 'Stop' : 'Play'}
           </button>
+          {playing && audioBlocked && (
+            <p className="mt-2 text-xs text-maroon-600">
+              Your browser is blocking sound here — tap Stop, then Play again, or check your
+              device isn't muted.
+            </p>
+          )}
         </div>
 
         <div className="mt-8">
