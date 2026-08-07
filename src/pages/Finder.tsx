@@ -73,15 +73,31 @@ const questions: Question[] = [
   },
 ];
 
-const MAX_DISTANCE = Math.sqrt(questions.length * 4 ** 2);
-
-function matchScore(answers: Record<TraitKey, number>, dance: Dance) {
+function traitDistance(answers: Record<TraitKey, number>, dance: Dance) {
   const squaredDiffs = (Object.keys(answers) as TraitKey[]).map((trait) => {
     const diff = answers[trait] - dance.traits[trait];
     return diff * diff;
   });
-  const distance = Math.sqrt(squaredDiffs.reduce((a, b) => a + b, 0));
-  return Math.round(100 - (distance / MAX_DISTANCE) * 100);
+  return Math.sqrt(squaredDiffs.reduce((a, b) => a + b, 0));
+}
+
+/**
+ * Match % is a rank within this quiz attempt, not an absolute compatibility score: the
+ * closest dance is scaled up near 99% (100% only for an exact trait match) and the
+ * farthest down to 55%, so "your top match" reads as confident even when every dance is
+ * a middling fit for someone with mixed answers, while the ordering stays untouched.
+ */
+function rankDances(answers: Record<TraitKey, number>, danceList: Dance[]) {
+  const withDistance = danceList.map((dance) => ({ dance, distance: traitDistance(answers, dance) }));
+  const distances = withDistance.map((d) => d.distance);
+  const minDistance = Math.min(...distances);
+  const range = Math.max(...distances) - minDistance || 1;
+  return withDistance
+    .map(({ dance, distance }) => ({
+      dance,
+      score: distance === 0 ? 100 : Math.round(99 - ((distance - minDistance) / range) * 44),
+    }))
+    .sort((a, b) => b.score - a.score);
 }
 
 const TRAIT_LABELS: Record<TraitKey, string> = {
@@ -163,11 +179,7 @@ export default function Finder() {
     headingRef.current?.focus();
   }, [step, isComplete]);
 
-  const results = isComplete
-    ? [...dances]
-        .map((d) => ({ dance: d, score: matchScore(answers as Record<TraitKey, number>, d) }))
-        .sort((a, b) => b.score - a.score)
-    : [];
+  const results = isComplete ? rankDances(answers as Record<TraitKey, number>, dances) : [];
 
   const handleAnswer = (trait: TraitKey, value: number, index: number) => {
     setDirection(1);
