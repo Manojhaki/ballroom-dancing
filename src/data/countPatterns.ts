@@ -64,4 +64,17 @@ export const countPatterns: Record<string, { pattern: CountPattern; description:
     description:
       "Quickstep's basic is Slow, Quick, Quick over a single bar — the accent lands on 1.",
   },
+  rumba: {
+    pattern: {
+      // Quick, Quick, Slow -- one bar of Rumba's 4/4 time
+      cycleBeats: 4,
+      steps: [
+        { label: '1', beatOffset: 0, accent: true }, // Quick
+        { label: '2', beatOffset: 1 }, // Quick
+        { label: '3', beatOffset: 2 }, // Slow, spans 3-4
+      ],
+    },
+    description:
+      'Rumba is Quick, Quick, Slow — quick steps on 1 and 2, then a slow that stretches across 3 and 4. The accent lands on 1.',
+  },
 };
