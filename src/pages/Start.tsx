@@ -115,6 +115,22 @@ export default function Start() {
           Find your dance
         </Link>
       </section>
+
+      <section className="mt-8 rounded-2xl border border-gold-200 bg-gold-50 p-8 text-center">
+        <h2 className="font-display text-xl font-semibold text-gold-900">
+          Want to hear it before you feel it?
+        </h2>
+        <p className="mx-auto mt-2 max-w-md text-sm text-gold-900/85">
+          The Beat Trainer is a metronome for each dance's own tempo. Slow it down and count
+          along a few times before you need to do it with your feet.
+        </p>
+        <Link
+          to="/beat-trainer"
+          className="mt-5 inline-block rounded-full border border-maroon-300 bg-white px-6 py-2.5 text-sm font-semibold text-maroon-800 transition-colors hover:bg-maroon-100"
+        >
+          Try the Beat Trainer
+        </Link>
+      </section>
     </div>
   );
 }

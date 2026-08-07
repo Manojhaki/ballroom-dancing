@@ -101,6 +101,12 @@ export default function DanceDetail() {
               <dd className="text-right font-medium text-maroon-900">{dance.tempo}</dd>
             </div>
           </dl>
+          <Link
+            to={`/beat-trainer?dance=${dance.id}`}
+            className="mt-4 inline-block text-sm font-medium text-maroon-700 underline hover:text-maroon-900"
+          >
+            Practice this tempo →
+          </Link>
         </div>
 
         <div className="rounded-2xl border border-maroon-200 bg-white p-6">

@@ -11,6 +11,7 @@ import History from './pages/History';
 import About from './pages/About';
 import Credits from './pages/Credits';
 import Finder from './pages/Finder';
+import BeatTrainer from './pages/BeatTrainer';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path="about" element={<About />} />
         <Route path="credits" element={<Credits />} />
         <Route path="finder" element={<Finder />} />
+        <Route path="beat-trainer" element={<BeatTrainer />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
