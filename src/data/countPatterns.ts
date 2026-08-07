@@ -37,4 +37,31 @@ export const countPatterns: Record<string, { pattern: CountPattern; description:
     description:
       'Tango walks Slow, Slow, Quick, Quick, Drag — the accented Quick-Quick on 5-6 is the staccato snap that gives Tango its character.',
   },
+  foxtrot: {
+    pattern: {
+      // Slow, Slow, Quick, Quick -- 1.5 bars of Foxtrot's 4/4 time
+      cycleBeats: 6,
+      steps: [
+        { label: '1', beatOffset: 0, accent: true }, // Slow
+        { label: '3', beatOffset: 2 }, // Slow
+        { label: '5', beatOffset: 4 }, // Quick
+        { label: '6', beatOffset: 5 }, // Quick
+      ],
+    },
+    description:
+      'Foxtrot walks Slow, Slow, Quick, Quick — the accent falls on 1, the start of each smooth, gliding phrase.',
+  },
+  quickstep: {
+    pattern: {
+      // Slow, Quick, Quick -- one bar of Quickstep's 4/4 time
+      cycleBeats: 4,
+      steps: [
+        { label: '1', beatOffset: 0, accent: true }, // Slow
+        { label: '3', beatOffset: 2 }, // Quick
+        { label: '4', beatOffset: 3 }, // Quick
+      ],
+    },
+    description:
+      "Quickstep's basic is Slow, Quick, Quick over a single bar — the accent lands on 1.",
+  },
 };
