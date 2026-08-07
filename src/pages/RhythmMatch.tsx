@@ -70,7 +70,10 @@ export default function RhythmMatch() {
   const perBar = useMemo(() => beatsPerBar(dance.timeSignature), [dance]);
   const verified = countPatterns[dance.id];
   const pattern = useMemo(() => verified?.pattern ?? defaultPattern(unit, perBar), [verified, unit, perBar]);
-  const cyclesPerMinute = unit === 'bpm' ? rate / pattern.cycleBeats : rate;
+  // rate is beats/min for bpm dances, bars/min for bars/min dances -- a pattern's cycle can
+  // span more than one bar (e.g. Tango's phrase is 4 bars), so convert through beats/min
+  // rather than assuming cycleBeats always equals one bar's worth of beats.
+  const cyclesPerMinute = unit === 'bpm' ? rate / pattern.cycleBeats : (rate * perBar) / pattern.cycleBeats;
 
   const { audioCtxRef, start: startAudio } = useAudioContext();
 

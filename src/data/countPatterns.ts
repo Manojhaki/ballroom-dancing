@@ -22,4 +22,19 @@ export const countPatterns: Record<string, { pattern: CountPattern; description:
     description:
       "Cha Cha breaks on 2 — that's the accented click — then closes the phrase with the classic cha-cha-cha triple on 4-&-1.",
   },
+  tango: {
+    pattern: {
+      // A full walk phrase is Slow, Slow, Quick, Quick, Drag -- 4 bars of Tango's 2/4 time
+      cycleBeats: 8,
+      steps: [
+        { label: '1', beatOffset: 0 }, // Slow
+        { label: '3', beatOffset: 2 }, // Slow
+        { label: '5', beatOffset: 4, accent: true }, // Quick
+        { label: '6', beatOffset: 5, accent: true }, // Quick
+        { label: '7', beatOffset: 6 }, // Drag
+      ],
+    },
+    description:
+      'Tango walks Slow, Slow, Quick, Quick, Drag — the accented Quick-Quick on 5-6 is the staccato snap that gives Tango its character.',
+  },
 };
