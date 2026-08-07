@@ -110,11 +110,12 @@ function useAudioContext() {
   return { audioCtxRef, start };
 }
 
-function useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef }: {
+function useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef, volumeRef }: {
   clicksPerMinute: number;
   isDownbeat: (clickIndex: number) => boolean;
   playing: boolean;
   audioCtxRef: RefObject<AudioContext | null>;
+  volumeRef: RefObject<number>;
 }) {
   const [currentClick, setCurrentClick] = useState(0);
   const nextClickTimeRef = useRef(0);
@@ -135,9 +136,10 @@ function useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef }: {
     const playClick = (time: number, accented: boolean) => {
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
+      const volumeScale = Math.max(volumeRef.current, 0.01) / 100;
       osc.frequency.value = accented ? 1400 : 900;
       gain.gain.setValueAtTime(0.0001, time);
-      gain.gain.exponentialRampToValueAtTime(accented ? 0.55 : 0.4, time + 0.005);
+      gain.gain.exponentialRampToValueAtTime((accented ? 0.55 : 0.4) * volumeScale, time + 0.005);
       gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.06);
       osc.connect(gain).connect(ctx.destination);
       osc.start(time);
@@ -193,26 +195,58 @@ export default function BeatTrainer() {
   const [speedPct, setSpeedPct] = useState(75);
   const [playing, setPlaying] = useState(false);
   const [audioBlocked, setAudioBlocked] = useState(false);
+  const [volumePct, setVolumePct] = useState(80);
+  const [customBpm, setCustomBpm] = useState<number | null>(null);
   const unlockAudioRef = useRef<HTMLAudioElement | null>(null);
+  const volumeRef = useRef(volumePct);
+  const tapTimesRef = useRef<number[]>([]);
+
+  useEffect(() => {
+    volumeRef.current = volumePct;
+  }, [volumePct]);
 
   const dance = getDanceById(selectedId) ?? dances[0];
-  const { rate, unit } = useMemo(() => parseTempo(dance.tempo), [dance]);
+  const { rate, unit: publishedUnit } = useMemo(() => parseTempo(dance.tempo), [dance]);
   const perBar = useMemo(() => beatsPerBar(dance.timeSignature), [dance]);
-  const clicksPerMinute = Math.round((rate * speedPct) / 100);
+  // Tapping your own tempo always yields beats, regardless of how the dance's own tempo is published
+  const unit: TempoUnit = customBpm ? 'bpm' : publishedUnit;
+  const clicksPerMinute = customBpm ?? Math.round((rate * speedPct) / 100);
 
   const { audioCtxRef, start: startAudio } = useAudioContext();
   const isDownbeat = (clickIndex: number) => unit === 'bpm' && clickIndex % perBar === 0;
-  const currentClick = useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef });
+  const currentClick = useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef, volumeRef });
   const beatInBar = unit === 'bpm' ? (currentClick % perBar) + 1 : null;
 
   useEffect(() => {
     setPlaying(false);
+    setCustomBpm(null);
+    tapTimesRef.current = [];
     unlockAudioRef.current?.pause();
   }, [selectedId]);
 
   const selectDance = (d: Dance) => {
     setSelectedId(d.id);
     setSearchParams({ dance: d.id }, { replace: true });
+  };
+
+  const handleTap = () => {
+    const now = performance.now();
+    const taps = tapTimesRef.current;
+    const last = taps[taps.length - 1];
+    const resetGap = last !== undefined && now - last > 2500;
+    const nextTaps = resetGap ? [now] : [...taps, now].slice(-8);
+    tapTimesRef.current = nextTaps;
+    if (nextTaps.length >= 2) {
+      const intervals = nextTaps.slice(1).map((t, i) => t - nextTaps[i]);
+      const avgIntervalMs = intervals.reduce((a, b) => a + b, 0) / intervals.length;
+      const bpm = Math.round(60000 / avgIntervalMs);
+      setCustomBpm(Math.min(300, Math.max(20, bpm)));
+    }
+  };
+
+  const useDanceTempo = () => {
+    tapTimesRef.current = [];
+    setCustomBpm(null);
   };
 
   const togglePlay = () => {
@@ -283,9 +317,11 @@ export default function BeatTrainer() {
         </div>
 
         <p className="mt-2 text-sm text-maroon-700/80">
-          {unit === 'bpm'
-            ? `Studios publish this one in beats per minute, so each click below is a beat — the accented click is beat 1 of every ${perBar}-beat bar.`
-            : `Studios publish this one in bars per minute rather than beats, since how many steps fit in a bar changes dance to dance. Each click below marks one full bar — count your own steps into the gap between clicks.`}
+          {customBpm
+            ? `Tapped to ${customBpm} beats per minute — match this to whatever song you've got playing, and the accent still marks beat 1 of every ${perBar}-beat bar for this dance.`
+            : publishedUnit === 'bpm'
+              ? `Studios publish this one in beats per minute, so each click below is a beat — the accented click is beat 1 of every ${perBar}-beat bar.`
+              : `Studios publish this one in bars per minute rather than beats, since how many steps fit in a bar changes dance to dance. Each click below marks one full bar — count your own steps into the gap between clicks.`}
         </p>
 
         <div className="mt-8 flex flex-col items-center">
@@ -303,14 +339,23 @@ export default function BeatTrainer() {
             {unit === 'bpm' ? beatInBar ?? 1 : 'Bar'}
           </motion.div>
 
-          <button
-            type="button"
-            onClick={togglePlay}
-            aria-pressed={playing}
-            className="mt-6 rounded-full bg-maroon-700 px-8 py-3 text-sm font-semibold text-gold-50 transition-colors hover:bg-maroon-800"
-          >
-            {playing ? 'Stop' : 'Play'}
-          </button>
+          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+            <button
+              type="button"
+              onClick={togglePlay}
+              aria-pressed={playing}
+              className="rounded-full bg-maroon-700 px-8 py-3 text-sm font-semibold text-gold-50 transition-colors hover:bg-maroon-800"
+            >
+              {playing ? 'Stop' : 'Play'}
+            </button>
+            <button
+              type="button"
+              onClick={handleTap}
+              className="rounded-full border border-maroon-300 bg-white px-6 py-3 text-sm font-semibold text-maroon-800 transition-colors hover:bg-maroon-100"
+            >
+              Tap tempo
+            </button>
+          </div>
           {playing && audioBlocked && (
             <p className="mt-2 text-xs text-maroon-600">
               Your browser is blocking sound here — tap Stop, then Play again, or check your
@@ -319,28 +364,60 @@ export default function BeatTrainer() {
           )}
         </div>
 
-        <div className="mt-8">
+        {customBpm ? (
+          <div className="mt-8 flex flex-wrap items-center justify-between gap-2 rounded-xl bg-maroon-50 px-4 py-3 text-sm">
+            <span className="font-medium text-maroon-800">Custom tempo: {customBpm} bpm</span>
+            <button
+              type="button"
+              onClick={useDanceTempo}
+              className="font-medium text-maroon-700 underline hover:text-maroon-900"
+            >
+              Use {dance.name}'s own tempo instead
+            </button>
+          </div>
+        ) : (
+          <div className="mt-8">
+            <div className="flex items-center justify-between text-sm">
+              <label htmlFor="speed" className="font-medium text-maroon-800">
+                Practice speed
+              </label>
+              <span className="text-maroon-700/80">
+                {speedPct}% · ≈{clicksPerMinute} {unit === 'bpm' ? 'beats' : 'bars'}/min
+              </span>
+            </div>
+            <input
+              id="speed"
+              type="range"
+              min={50}
+              max={100}
+              step={5}
+              value={speedPct}
+              onChange={(e) => setSpeedPct(Number(e.target.value))}
+              className="mt-2 w-full accent-maroon-600"
+            />
+            <p className="mt-1 text-xs text-maroon-700/60">
+              Capped at the dance's own published tempo — start slower, work up to full speed.
+            </p>
+          </div>
+        )}
+
+        <div className="mt-6">
           <div className="flex items-center justify-between text-sm">
-            <label htmlFor="speed" className="font-medium text-maroon-800">
-              Practice speed
+            <label htmlFor="volume" className="font-medium text-maroon-800">
+              Volume
             </label>
-            <span className="text-maroon-700/80">
-              {speedPct}% · ≈{clicksPerMinute} {unit === 'bpm' ? 'beats' : 'bars'}/min
-            </span>
+            <span className="text-maroon-700/80">{volumePct}%</span>
           </div>
           <input
-            id="speed"
+            id="volume"
             type="range"
-            min={50}
+            min={0}
             max={100}
             step={5}
-            value={speedPct}
-            onChange={(e) => setSpeedPct(Number(e.target.value))}
+            value={volumePct}
+            onChange={(e) => setVolumePct(Number(e.target.value))}
             className="mt-2 w-full accent-maroon-600"
           />
-          <p className="mt-1 text-xs text-maroon-700/60">
-            Capped at the dance's own published tempo — start slower, work up to full speed.
-          </p>
         </div>
       </div>
 
