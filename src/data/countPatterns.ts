@@ -77,4 +77,19 @@ export const countPatterns: Record<string, { pattern: CountPattern; description:
     description:
       'Rumba is Quick, Quick, Slow — quick steps on 1 and 2, then a slow that stretches across 3 and 4. The accent lands on 1.',
   },
+  samba: {
+    pattern: {
+      // The samba bounce: "1" held 3/4 beat, a quick "a" pickup, then a full beat on "2" --
+      // one bar of Samba's 2/4 time, repeating (longer phrases just keep counting 3-a-4,
+      // 5-a-6, 7-a-8 across further bars, same shape each time)
+      cycleBeats: 2,
+      steps: [
+        { label: '1', beatOffset: 0, accent: true },
+        { label: 'a', beatOffset: 0.75 },
+        { label: '2', beatOffset: 1 },
+      ],
+    },
+    description:
+      'Samba bounces "1-a-2" — 1 held for three-quarters of a beat, a quick "a" pickup, then a full beat on 2. The accent lands on 1.',
+  },
 };
