@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { dances } from '../data/dances';
 import { RevealGrid, RevealItem } from '../components/RevealGrid';
 import VideoEmbed from '../components/VideoEmbed';
+import PracticeTools from '../components/PracticeTools';
 
 const entryPaths = [
   {
@@ -133,6 +134,10 @@ export default function Home() {
           </RevealGrid>
         </div>
       </section>
+
+      <div className="mx-auto max-w-6xl px-4 py-16 sm:px-6">
+        <PracticeTools />
+      </div>
     </div>
   );
 }
