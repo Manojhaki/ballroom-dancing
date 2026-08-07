@@ -12,6 +12,7 @@ import About from './pages/About';
 import Credits from './pages/Credits';
 import Finder from './pages/Finder';
 import BeatTrainer from './pages/BeatTrainer';
+import SongFinder from './pages/SongFinder';
 import NotFound from './pages/NotFound';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path="credits" element={<Credits />} />
         <Route path="finder" element={<Finder />} />
         <Route path="beat-trainer" element={<BeatTrainer />} />
+        <Route path="songs" element={<SongFinder />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

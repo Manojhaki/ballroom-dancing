@@ -100,36 +100,49 @@ export default function Start() {
         </dl>
       </section>
 
-      <section className="mt-14 rounded-2xl border border-gold-200 bg-gold-50 p-8 text-center">
-        <h2 className="font-display text-xl font-semibold text-gold-900">
-          Not sure which dance to start with?
-        </h2>
-        <p className="mx-auto mt-2 max-w-md text-sm text-gold-900/85">
-          Take the two-minute Dance Finder quiz and get matched to styles that fit your taste in
-          music and energy.
+      <section className="mt-14">
+        <h2 className="font-display text-2xl font-semibold text-maroon-900">Practice tools</h2>
+        <p className="mt-2 max-w-2xl text-sm text-maroon-700/80">
+          Three small tools for the space between "I read about it" and "I can do it."
         </p>
-        <Link
-          to="/finder"
-          className="mt-5 inline-block rounded-full bg-maroon-700 px-6 py-2.5 text-sm font-semibold text-gold-50 transition-colors hover:bg-maroon-800"
-        >
-          Find your dance
-        </Link>
-      </section>
-
-      <section className="mt-8 rounded-2xl border border-gold-200 bg-gold-50 p-8 text-center">
-        <h2 className="font-display text-xl font-semibold text-gold-900">
-          Want to hear it before you feel it?
-        </h2>
-        <p className="mx-auto mt-2 max-w-md text-sm text-gold-900/85">
-          The Beat Trainer is a metronome for each dance's own tempo. Slow it down and count
-          along a few times before you need to do it with your feet.
-        </p>
-        <Link
-          to="/beat-trainer"
-          className="mt-5 inline-block rounded-full border border-maroon-300 bg-white px-6 py-2.5 text-sm font-semibold text-maroon-800 transition-colors hover:bg-maroon-100"
-        >
-          Try the Beat Trainer
-        </Link>
+        <div className="mt-6 grid gap-5 sm:grid-cols-3">
+          <div className="flex flex-col rounded-2xl border border-gold-200 bg-gold-50 p-6 text-center">
+            <h3 className="font-display text-lg font-semibold text-gold-900">Dance Finder</h3>
+            <p className="mt-2 flex-1 text-sm text-gold-900/85">
+              A two-minute quiz matched to your taste in music and energy.
+            </p>
+            <Link
+              to="/finder"
+              className="mt-5 inline-block rounded-full bg-maroon-700 px-5 py-2 text-sm font-semibold text-gold-50 transition-colors hover:bg-maroon-800"
+            >
+              Find your dance
+            </Link>
+          </div>
+          <div className="flex flex-col rounded-2xl border border-gold-200 bg-gold-50 p-6 text-center">
+            <h3 className="font-display text-lg font-semibold text-gold-900">Beat Trainer</h3>
+            <p className="mt-2 flex-1 text-sm text-gold-900/85">
+              A metronome for each dance's own tempo. Slow it down and count along.
+            </p>
+            <Link
+              to="/beat-trainer"
+              className="mt-5 inline-block rounded-full border border-maroon-300 bg-white px-5 py-2 text-sm font-semibold text-maroon-800 transition-colors hover:bg-maroon-100"
+            >
+              Try the Beat Trainer
+            </Link>
+          </div>
+          <div className="flex flex-col rounded-2xl border border-gold-200 bg-gold-50 p-6 text-center">
+            <h3 className="font-display text-lg font-semibold text-gold-900">Song Finder</h3>
+            <p className="mt-2 flex-1 text-sm text-gold-900/85">
+              Popular and newer songs to practice each style to, by dance.
+            </p>
+            <Link
+              to="/songs"
+              className="mt-5 inline-block rounded-full border border-maroon-300 bg-white px-5 py-2 text-sm font-semibold text-maroon-800 transition-colors hover:bg-maroon-100"
+            >
+              Find songs
+            </Link>
+          </div>
+        </div>
       </section>
     </div>
   );

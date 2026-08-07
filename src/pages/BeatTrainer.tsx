@@ -13,6 +13,7 @@ import { useEffect, useMemo, useRef, useState, type RefObject } from 'react';
 import { motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { dances, getDanceById, type Dance } from '../data/dances';
+import { DANCE_GROUPS } from '../data/danceGroups';
 
 type TempoUnit = 'bpm' | 'bars/min';
 
@@ -170,21 +171,6 @@ function useMetronome({ clicksPerMinute, isDownbeat, playing, audioCtxRef, volum
 
   return currentClick;
 }
-
-const DANCE_GROUPS: { label: string; ids: string[] }[] = [
-  {
-    label: 'Smooth & Standard',
-    ids: ['waltz', 'tango', 'viennese-waltz', 'foxtrot', 'quickstep'],
-  },
-  {
-    label: 'Rhythm & Latin',
-    ids: ['cha-cha', 'rumba', 'samba', 'jive', 'paso-doble', 'bolero', 'mambo'],
-  },
-  {
-    label: 'Social',
-    ids: ['east-coast-swing', 'salsa', 'hustle', 'bachata'],
-  },
-];
 
 const SILENT_UNLOCK_SRC = createSilentWavDataUri();
 
